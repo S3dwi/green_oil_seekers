@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: const Text(
                   'Recycle Your Oil Now!',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ),
