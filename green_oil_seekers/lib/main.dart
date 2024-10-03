@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:green_oil_seekers/choose_city.dart'; // Import the new screen here
+import 'package:green_oil_seekers/home_screen/home_screen.dart'; // Import the HomeScreen
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -28,7 +28,7 @@ class App extends StatelessWidget {
       theme: theme,
       themeMode: ThemeMode.system,
       // Set initial route to HomeScreen
-      home: const ChooseCityScreen(),
+      home: HomeScreen(), // Start at the HomeScreen
     );
   }
 }

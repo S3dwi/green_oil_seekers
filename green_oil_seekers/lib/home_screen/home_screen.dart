@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:green_oil_seekers/chooseCity_screen/chooseCity_screen.dart'; // Import ChooseCityScreen
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -86,10 +87,14 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {
-                  // Add action here
+                  // Navigate to ChooseCityScreen when button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChooseCityScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.green, // Set your button color here
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
