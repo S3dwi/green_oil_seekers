@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
 class DropdownField extends StatelessWidget {
-  final String hint;
-  final List<String> items;
-  final String? selectedItem;
-  final ValueChanged<String?> onChanged;
-
-  DropdownField({
+  const DropdownField({
+    super.key,
     required this.hint,
     required this.items,
     required this.selectedItem,
     required this.onChanged,
   });
+
+  final String hint;
+  final List<String> items;
+  final String? selectedItem;
+  final ValueChanged<String?> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +36,21 @@ class DropdownField extends StatelessWidget {
         hint: Text(hint),
         value: selectedItem,
         onChanged: onChanged,
-        items: items.map((item) {
-          return DropdownMenuItem(
-            value: item,
-            child: Text(
-              item,
-              style: TextStyle(
-                color: selectedItem == item
-                    ? Color(0xFF47AB4D)
-                    : Colors.black, // Green when selected
+        items: items.map(
+          (item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Text(
+                item,
+                style: TextStyle(
+                  color: selectedItem == item
+                      ? const Color(0xFF47AB4D)
+                      : Colors.black, // Green when selected
+                ),
               ),
-            ),
-          );
-        }).toList(),
+            );
+          },
+        ).toList(),
       ),
     );
   }

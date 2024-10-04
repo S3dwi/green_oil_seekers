@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class OilTypeSelection extends StatefulWidget {
+  const OilTypeSelection({super.key});
   @override
-  _OilTypeSelectionState createState() => _OilTypeSelectionState();
+  State<StatefulWidget> createState() {
+    return _OilTypeSelectionState();
+  }
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {

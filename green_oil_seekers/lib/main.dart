@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:green_oil_seekers/home_screen/home_screen.dart'; // Import the HomeScreen
+import 'package:green_oil_seekers/nav_bar.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
   scaffoldBackgroundColor: const Color(0xFFF8F8F8),
+  cardColor: const Color(0xFFFFFFFF),
+  // Primary color used for elements like buttons and icon.
   primaryColor: const Color(0xFF47AB4D),
+  disabledColor: const Color(0xFFA9A9AC),
+  fontFamily: 'Lato',
 );
 
 void main() {
@@ -27,8 +31,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: theme,
       themeMode: ThemeMode.system,
-      // Set initial route to HomeScreen
-      home: HomeScreen(), // Start at the HomeScreen
+      home: const NavBar(), // Start at the HomeScreen
     );
   }
 }

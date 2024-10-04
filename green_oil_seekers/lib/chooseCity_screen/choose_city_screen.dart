@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'chooseOffer.dart'; // Import the modal logic
+import 'choose_offer.dart'; // Import the modal logic
 
 class ChooseCityScreen extends StatefulWidget {
+  const ChooseCityScreen({super.key});
   @override
-  _ChooseCityScreenState createState() => _ChooseCityScreenState();
+  State<StatefulWidget> createState() {
+    return _ChooseCityScreenState();
+  }
 }
 
 class _ChooseCityScreenState extends State<ChooseCityScreen> {
@@ -24,24 +27,23 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        centerTitle: true, // Ensures title is centered
         title: const Text(
           'Complete Order',
           style: TextStyle(
-            fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontSize: 25,
           ),
         ),
-        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            size: 25,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,7 +85,7 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                           enabled: false,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
                                 'Find City',
                                 style: TextStyle(
@@ -95,19 +97,21 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                           ),
                         ),
                         // The actual list of cities
-                        ...cities.map((city) {
-                          return DropdownMenuItem(
-                            value: city,
-                            child: Text(
-                              city,
-                              style: TextStyle(
-                                color: selectedCity == city
-                                    ? const Color(0xFF47AB4D)
-                                    : Colors.black, // Green when selected
+                        ...cities.map(
+                          (city) {
+                            return DropdownMenuItem(
+                              value: city,
+                              child: Text(
+                                city,
+                                style: TextStyle(
+                                  color: selectedCity == city
+                                      ? const Color(0xFF47AB4D)
+                                      : Colors.black, // Green when selected
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -224,7 +228,6 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
           ],
         ),
       ),
-      backgroundColor: const Color(0xFFF8F8F8), // Matches the Figma design
     );
   }
 }

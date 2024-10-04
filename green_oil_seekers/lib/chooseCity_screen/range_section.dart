@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
 class RangeSection extends StatefulWidget {
-  final String title;
-  final String unit;
-  final double min;
-  final double max;
-
   const RangeSection({
+    super.key,
     required this.title,
     required this.unit,
     required this.min,
     required this.max,
   });
+  final String title;
+  final String unit;
+  final double min;
+  final double max;
 
   @override
-  _RangeSectionState createState() => _RangeSectionState();
+  State<StatefulWidget> createState() {
+    return _RangeSectionState();
+  }
 }
 
 class _RangeSectionState extends State<RangeSection> {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'oil_type_selection.dart'; // Import your custom widgets if needed
 import 'range_section.dart';
 
@@ -40,7 +39,7 @@ void showOfferSheet(BuildContext context) {
               // Oil Type Selection
               const Text('Oil type',
                   style: TextStyle(fontWeight: FontWeight.bold)),
-              OilTypeSelection(), // Add the oil type selection widget
+              const OilTypeSelection(), // Add the oil type selection widget
               const SizedBox(height: 16),
 
               // Quantity Range Input
