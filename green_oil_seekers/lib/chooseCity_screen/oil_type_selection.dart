@@ -1,57 +1,64 @@
 import 'package:flutter/material.dart';
 
 class OilTypeSelection extends StatefulWidget {
-  const OilTypeSelection({super.key});
+  final List<String> oilTypes;
+  final Function(List<String>) onSelected;
+  final Color selectedColor;
+  final Color unselectedColor;
+
+  const OilTypeSelection({
+    super.key,
+    required this.onSelected,
+    this.oilTypes = const ['Cooking Oil', 'Motor Oil', 'Lubricating Oil'],
+    this.selectedColor = Colors.green,
+    this.unselectedColor = Colors.grey,
+  });
+
   @override
-  State<StatefulWidget> createState() {
-    return _OilTypeSelectionState();
-  }
+  _OilTypeSelectionState createState() => _OilTypeSelectionState();
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {
-  bool isCookingOilSelected = false;
-  bool isMotorOilSelected = false;
-  bool isLubricatingOilSelected = false;
+  List<String> selectedOilTypes = [];
+
+  void toggleSelection(String oilType) {
+    setState(() {
+      if (selectedOilTypes.contains(oilType)) {
+        selectedOilTypes.remove(oilType);
+      } else {
+        selectedOilTypes.add(oilType);
+      }
+    });
+    widget.onSelected(selectedOilTypes);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        buildOilTypeButton('Cooking Oil', isCookingOilSelected, () {
-          setState(() {
-            isCookingOilSelected = !isCookingOilSelected;
-          });
-        }),
-        buildOilTypeButton('Motor Oil', isMotorOilSelected, () {
-          setState(() {
-            isMotorOilSelected = !isMotorOilSelected;
-          });
-        }),
-        buildOilTypeButton('Lubricating Oil', isLubricatingOilSelected, () {
-          setState(() {
-            isLubricatingOilSelected = !isLubricatingOilSelected;
-          });
-        }),
-      ],
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: widget.oilTypes.map((oilType) {
+        return buildOilTypeButton(
+          oilType,
+          selectedOilTypes.contains(oilType),
+          () => toggleSelection(oilType),
+        );
+      }).toList(),
     );
   }
 
   Widget buildOilTypeButton(
       String text, bool isSelected, VoidCallback onPressed) {
-    return ElevatedButton(
+    return OutlinedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isSelected ? const Color(0xFF47AB4D) : Colors.grey[300],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+      style: OutlinedButton.styleFrom(
+        backgroundColor: isSelected ? Colors.grey[200] : Colors.transparent,
+        side: BorderSide(
+            color: isSelected ? widget.selectedColor : widget.unselectedColor),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
+          color: isSelected ? widget.selectedColor : Colors.black,
         ),
       ),
     );

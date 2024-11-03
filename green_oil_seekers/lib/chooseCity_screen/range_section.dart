@@ -1,33 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RangeSection extends StatefulWidget {
-  const RangeSection({
-    super.key,
-    required this.title,
-    required this.unit,
-    required this.min,
-    required this.max,
-  });
   final String title;
   final String unit;
   final double min;
   final double max;
+  final Function(double, double)? onRangeSelected;
+
+  const RangeSection({
+    Key? key,
+    required this.title,
+    required this.unit,
+    required this.min,
+    required this.max,
+    this.onRangeSelected,
+  }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _RangeSectionState();
-  }
+  _RangeSectionState createState() => _RangeSectionState();
 }
 
 class _RangeSectionState extends State<RangeSection> {
-  final TextEditingController _minController = TextEditingController();
-  final TextEditingController _maxController = TextEditingController();
+  late TextEditingController minController;
+  late TextEditingController maxController;
 
   @override
   void initState() {
     super.initState();
-    _minController.text = ''; // Start with empty text for min
-    _maxController.text = ''; // Start with empty text for max
+    minController = TextEditingController();
+    maxController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    minController.dispose();
+    maxController.dispose();
+    super.dispose();
+  }
+
+  void _onRangeChanged() {
+    final minVal = double.tryParse(minController.text) ?? widget.min;
+    final maxVal = double.tryParse(maxController.text) ?? widget.max;
+    if (minVal <= maxVal) {
+      widget.onRangeSelected?.call(minVal, maxVal);
+    }
   }
 
   @override
@@ -35,57 +52,53 @@ class _RangeSectionState extends State<RangeSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          widget.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            buildRangeInputField(
-              controller: _minController,
-              hint: widget.min.toStringAsFixed(2), // Placeholder for min value
-              unit: widget.unit,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 16.0), // Padding for both sides
-              child: Text(
-                'to',
-                style: TextStyle(fontSize: 20), // Adjust the font size here
+            Expanded(
+              child: TextField(
+                controller: minController,
+                decoration: InputDecoration(
+                  hintText: 'Min ${widget.unit}',
+                  suffixText: widget.unit,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
+                onChanged: (value) => _onRangeChanged(),
               ),
             ),
-            buildRangeInputField(
-              controller: _maxController,
-              hint: widget.max.toStringAsFixed(2), // Placeholder for max value
-              unit: widget.unit,
+            const SizedBox(width: 16),
+            const Text('to'),
+            const SizedBox(width: 16),
+            Expanded(
+              child: TextField(
+                controller: maxController,
+                decoration: InputDecoration(
+                  hintText: 'Max ${widget.unit}',
+                  suffixText: widget.unit,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
+                onChanged: (value) => _onRangeChanged(),
+              ),
             ),
           ],
         ),
       ],
-    );
-  }
-
-  Widget buildRangeInputField({
-    required TextEditingController controller,
-    required String hint,
-    required String unit,
-  }) {
-    return Expanded(
-      child: TextFormField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          hintText: hint, // Placeholder text
-          suffixText: unit,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onTap: () {
-          if (controller.text == hint) {
-            controller
-                .clear(); // Clear text when clicked if placeholder is still there
-          }
-        },
-      ),
     );
   }
 }

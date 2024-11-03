@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'choose_offer.dart'; // Import the modal logic
+import 'choose_offer.dart';
+import 'payment.dart';
 
 class ChooseCityScreen extends StatefulWidget {
-  const ChooseCityScreen({super.key});
+  const ChooseCityScreen({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() {
-    return _ChooseCityScreenState();
-  }
+  _ChooseCityScreenState createState() => _ChooseCityScreenState();
 }
 
 class _ChooseCityScreenState extends State<ChooseCityScreen> {
+  String? selectedCity;
+  String? selectedCompany;
+  String selectedOffer = '';
+  Map<String, dynamic>? selectedOfferDetails;
+
   final List<String> cities = [
     'Jeddah',
     'Riyadh',
@@ -21,198 +26,152 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   ];
   final List<String> companies = ['Moblpetroleum', 'Green Oil'];
 
-  String? selectedCity;
-  String? selectedCompany;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true, // Ensures title is centered
         title: const Text(
           'Complete Order',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 25,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.black,
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Custom Dropdown for choosing city
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                        ),
-                      ],
+            buildDropdownButton('Choose City', selectedCity, cities, (value) {
+              setState(() {
+                selectedCity = value;
+              });
+            }),
+            const SizedBox(height: 16),
+            buildDropdownButton(
+                'Choose Factory/Company', selectedCompany, companies, (value) {
+              setState(() {
+                selectedCompany = value;
+              });
+            }),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () async {
+                final offer = await showOfferSheet(context);
+                if (offer != null) {
+                  setState(() {
+                    selectedOfferDetails = offer as Map<String, dynamic>?;
+                    selectedOffer = offer['oilType'];
+                  });
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
                     ),
-                    child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      hint: const Text('Choose City'),
-                      value: selectedCity,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedCity = newValue;
-                        });
-                      },
-                      items: [
-                        // Custom Dropdown Header
-                        const DropdownMenuItem<String>(
-                          enabled: false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Find City',
-                                style: TextStyle(
-                                    fontSize: 20, color: Color(0xFF737373)),
-                              ),
-                              SizedBox(height: 8), // Spacing
-                              Divider(thickness: 1), // Line under "Find City"
-                            ],
-                          ),
-                        ),
-                        // The actual list of cities
-                        ...cities.map(
-                          (city) {
-                            return DropdownMenuItem(
-                              value: city,
-                              child: Text(
-                                city,
-                                style: TextStyle(
-                                  color: selectedCity == city
-                                      ? const Color(0xFF47AB4D)
-                                      : Colors.black, // Green when selected
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Dropdown for choosing company
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      hint: const Text('Choose Factory/Company'),
-                      value: selectedCompany,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedCompany = newValue;
-                        });
-                      },
-                      items: companies.map((company) {
-                        return DropdownMenuItem(
-                          value: company,
-                          child: Text(
-                            company,
-                            style: TextStyle(
-                              color: selectedCompany == company
-                                  ? const Color(0xFF47AB4D)
-                                  : Colors.black, // Green when selected
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Button for Choose Offer
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showOfferSheet(context); // Show the modal bottom sheet
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Choose Offer',
-                            style: TextStyle(
-                                color: Color(0xFF737373), fontSize: 20),
-                          ),
-                          Icon(Icons.tune, color: Color(0xFF737373)),
-                        ],
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      selectedOffer.isEmpty
+                          ? 'Choose Offer'
+                          : 'Selected Offer: $selectedOffer',
+                      style: TextStyle(
+                        color:
+                            selectedOffer.isEmpty ? Colors.grey : Colors.black,
+                        fontSize: 18,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
+                    const Icon(Icons.tune, color: Colors.grey),
+                  ],
+                ),
               ),
             ),
-
-            // Next button at the bottom
+            const SizedBox(height: 16),
+            if (selectedOfferDetails != null) ...[
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      selectedOfferDetails!['oilType'],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('Quantity: ${selectedOfferDetails!['quantity']} L'),
+                    Text(
+                        'Price per liter: ${selectedOfferDetails!['price']} SAR'),
+                    Text('Distance: ${selectedOfferDetails!['distance']} KM'),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        'Total: ${(selectedOfferDetails!['quantity'] * selectedOfferDetails!['price']).toStringAsFixed(2)} SAR',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const Spacer(),
             ElevatedButton(
-              onPressed: () {
-                // Handle next action
-              },
+              onPressed: selectedOfferDetails != null &&
+                      selectedCity != null &&
+                      selectedCompany != null
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PaymentScreen(
+                            oilPrice: selectedOfferDetails!['price'].toDouble(),
+                            cityName: selectedCity!,
+                            companyName: selectedCompany!,
+                            oilType: selectedOfferDetails!['oilType'],
+                            qtyOil:
+                                selectedOfferDetails!['quantity'].toDouble(),
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    const Color(0xFFA9A9AC), // Match the Figma grey
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 140),
+                backgroundColor: selectedOfferDetails == null
+                    ? Colors.grey[400]
+                    : Colors.green,
+                minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -221,12 +180,45 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                 'NEXT',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
               ),
             ),
+            const SizedBox(height: 30),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildDropdownButton(String hint, String? value, List<String> items,
+      ValueChanged<String?> onChanged) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: DropdownButton<String>(
+        value: value,
+        isExpanded: true,
+        hint: Text(hint, style: const TextStyle(color: Colors.grey)),
+        underline: const SizedBox(),
+        icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+        onChanged: onChanged,
+        items: items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value, style: const TextStyle(fontSize: 18)),
+          );
+        }).toList(),
       ),
     );
   }
