@@ -28,16 +28,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 Container(
                   width: double.infinity,
                   height: 330,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(30),
                       bottomLeft: Radius.circular(30),
                     ),
                     gradient: LinearGradient(
                       colors: [
-                        Color.fromARGB(255, 82, 156, 87),
-                        Color(0xff6db571),
-                        Color.fromARGB(255, 161, 213, 164),
+                        Theme.of(context).colorScheme.surfaceContainer,
+                        Theme.of(context).colorScheme.surfaceContainerHigh,
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,

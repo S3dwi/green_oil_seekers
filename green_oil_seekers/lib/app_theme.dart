@@ -17,7 +17,6 @@ final themeLight = ThemeData(
 final colorSchemeLight = ColorScheme.fromSeed(
   brightness: Brightness.light, // Theme brightness: light or dark
   seedColor: const Color(0xFF47AB4D),
-
   primary: const Color(0xFF47AB4D),
   // Main color used for primary interactive elements
   onPrimary: Colors.white, //  Component color
@@ -28,6 +27,11 @@ final colorSchemeLight = ColorScheme.fromSeed(
   error: Colors.red, // Error color for showing validation issues
 
   surface: const Color.fromARGB(0, 255, 255, 255),
+
+  //gredient colors (light)
+  surfaceContainer: const Color(0xFF529C57),
+  surfaceContainerHigh: const Color(0xFF6DB571),
+  surfaceContainerHighest: const Color(0xFFA1D5A4),
 );
 
 ///////////////////////////////////////////////////////////////////
