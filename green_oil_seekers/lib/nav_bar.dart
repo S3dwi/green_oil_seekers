@@ -4,7 +4,10 @@ import 'package:green_oil_seekers/profile_screen/profile_screen.dart';
 import 'package:green_oil_seekers/schedule_screen/schedule_screen.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({super.key});
+  const NavBar({super.key, required this.wantedPage});
+
+  final int wantedPage;
+
   @override
   State<NavBar> createState() {
     return _NavBar();
@@ -12,7 +15,14 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBar extends State<NavBar> {
-  int _selectedPageIndex = 0;
+  late int _selectedPageIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize _selectedPageIndex based on wantedPage
+    _selectedPageIndex = widget.wantedPage;
+  }
 
   void _selectPage(int index) {
     setState(() {
@@ -34,14 +44,14 @@ class _NavBar extends State<NavBar> {
       body: activePage,
       bottomNavigationBar: Container(
         height: 70,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
             topRight: Radius.circular(30),
             topLeft: Radius.circular(30),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black38,
+              color: Theme.of(context).shadowColor,
               spreadRadius: 0,
               blurRadius: 2,
             ),
@@ -55,13 +65,13 @@ class _NavBar extends State<NavBar> {
           child: BottomNavigationBar(
             onTap: _selectPage,
             currentIndex: _selectedPageIndex,
-            selectedItemColor: Theme.of(context).primaryColor,
-            unselectedItemColor: Colors.grey,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            unselectedItemColor: Theme.of(context).disabledColor,
             iconSize: 30,
             selectedFontSize: 16,
             unselectedFontSize: 14,
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.onPrimary,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(

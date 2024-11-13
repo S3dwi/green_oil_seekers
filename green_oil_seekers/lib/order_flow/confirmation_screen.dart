@@ -113,7 +113,11 @@ class ConfirmationScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const NavBar()),
+                      MaterialPageRoute(
+                        builder: (context) => const NavBar(
+                          wantedPage: 0,
+                        ),
+                      ),
                       (Route<dynamic> route) => false,
                     );
                   },

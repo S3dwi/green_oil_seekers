@@ -23,7 +23,9 @@ class App extends StatelessWidget {
       theme: themeLight,
       darkTheme: themeDark,
       themeMode: ThemeMode.system,
-      home: const NavBar(), // Start at the HomeScreen
+      home: const NavBar(
+        wantedPage: 0,
+      ), // Start at the HomeScreen
     );
   }
 }
