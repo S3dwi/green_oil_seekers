@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'oil_type_selection.dart';
+import 'oil_type_selection_screen.dart';
 import 'pick_offer_screen.dart';
-import 'range_section.dart';
+import 'range_section_screen.dart';
 
 Future<Map<String, dynamic>?> showOfferSheet(BuildContext context) {
   return showModalBottomSheet<Map<String, dynamic>>(

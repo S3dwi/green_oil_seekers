@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'choose_offer.dart';
-import 'payment.dart';
+import 'choose_offer_screen.dart';
+import 'payment_screen.dart';
 
 class ChooseCityScreen extends StatefulWidget {
   const ChooseCityScreen({Key? key}) : super(key: key);
@@ -29,7 +29,7 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
       appBar: AppBar(
         title: const Text(
           'Complete Order',
@@ -41,7 +41,7 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: Padding(
@@ -56,11 +56,15 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
             }),
             const SizedBox(height: 16),
             buildDropdownButton(
-                'Choose Factory/Company', selectedCompany, companies, (value) {
-              setState(() {
-                selectedCompany = value;
-              });
-            }),
+              'Choose Factory/Company',
+              selectedCompany,
+              companies,
+              (value) {
+                setState(() {
+                  selectedCompany = value;
+                });
+              },
+            ),
             const SizedBox(height: 16),
             GestureDetector(
               onTap: () async {
@@ -75,11 +79,11 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Theme.of(context).shadowColor.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
                     ),
@@ -93,12 +97,13 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                           ? 'Choose Offer'
                           : 'Selected Offer: $selectedOffer',
                       style: TextStyle(
-                        color:
-                            selectedOffer.isEmpty ? Colors.grey : Colors.black,
+                        color: selectedOffer.isEmpty
+                            ? Theme.of(context).disabledColor
+                            : Theme.of(context).colorScheme.secondary,
                         fontSize: 18,
                       ),
                     ),
-                    const Icon(Icons.tune, color: Colors.grey),
+                    Icon(Icons.tune, color: Theme.of(context).disabledColor),
                   ],
                 ),
               ),
@@ -108,11 +113,11 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Theme.of(context).shadowColor.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
                     ),
@@ -136,8 +141,8 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                       alignment: Alignment.bottomRight,
                       child: Text(
                         'Total: ${(selectedOfferDetails!['quantity'] * selectedOfferDetails!['price']).toStringAsFixed(2)} SAR',
-                        style: const TextStyle(
-                          color: Colors.green,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -169,17 +174,17 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: selectedOfferDetails == null
-                    ? Colors.grey[400]
-                    : Colors.green,
+                    ? Theme.of(context).disabledColor
+                    : Theme.of(context).colorScheme.primary,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'NEXT',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               ),
@@ -196,11 +201,11 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
           ),
@@ -209,14 +214,23 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
       child: DropdownButton<String>(
         value: value,
         isExpanded: true,
-        hint: Text(hint, style: const TextStyle(color: Colors.grey)),
+        hint: Text(hint,
+            style: TextStyle(color: Theme.of(context).disabledColor)),
         underline: const SizedBox(),
-        icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+        icon:
+            Icon(Icons.arrow_drop_down, color: Theme.of(context).disabledColor),
+        dropdownColor: Theme.of(context).colorScheme.onPrimary,
         onChanged: onChanged,
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, style: const TextStyle(fontSize: 18)),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
           );
         }).toList(),
       ),

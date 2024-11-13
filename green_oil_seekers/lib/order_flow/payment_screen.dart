@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'order_summary.dart';
+import 'package:green_oil_seekers/order_flow/order_summary_screen.dart';
+import 'package:green_oil_seekers/primary_button.dart';
 
 class PaymentScreen extends StatefulWidget {
   final double oilPrice;
@@ -96,40 +96,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
             _buildPaymentMethodOption('Cash', 'assets/images/cash.png'),
             _buildPaymentMethodOption('Paypal', 'assets/images/paypal.png'),
             const Spacer(),
-            ElevatedButton(
-              onPressed: selectedPaymentMethod != null
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OrderSummary(
-                            totalPayment: totalPayment,
-                            cityName: widget.cityName,
-                            companyName: widget.companyName,
-                            oilType: widget.oilType,
-                            qtyOil: widget.qtyOil,
-                            arrivalDate: arrivalDate,
+            PrimaryButton(
+              onPressed: () {
+                selectedPaymentMethod != null
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderSummary(
+                              totalPayment: totalPayment,
+                              cityName: widget.cityName,
+                              companyName: widget.companyName,
+                              oilType: widget.oilType,
+                              qtyOil: widget.qtyOil,
+                              arrivalDate: arrivalDate,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    selectedPaymentMethod != null ? Colors.green : Colors.grey,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'NEXT',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
+                        );
+                      }
+                    : null;
+              },
+              backgroundColor: selectedPaymentMethod != null
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).disabledColor,
+              label: 'NEXT',
+              vertical: 13,
+              horizontal: 145,
             ),
+
+            // ElevatedButton(
+            //   onPressed: selectedPaymentMethod != null
+            //       ? () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => OrderSummary(
+            //                 totalPayment: totalPayment,
+            //                 cityName: widget.cityName,
+            //                 companyName: widget.companyName,
+            //                 oilType: widget.oilType,
+            //                 qtyOil: widget.qtyOil,
+            //                 arrivalDate: arrivalDate,
+            //               ),
+            //             ),
+            //           );
+            //         }
+            //       : null,
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor:
+            //         selectedPaymentMethod != null ? Colors.green : Colors.grey,
+            //     minimumSize: const Size.fromHeight(50),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(8),
+            //     ),
+            //   ),
+            //   child: const Text(
+            //     'NEXT',
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 18,
+            //         fontWeight: FontWeight.bold),
+            //   ),
+            // ),
             const SizedBox(height: 16),
           ],
         ),
