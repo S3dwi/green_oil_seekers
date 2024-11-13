@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/models/order.dart';
 import 'package:green_oil_seekers/schedule_screen/order_details.dart';
 import 'package:green_oil_seekers/schedule_screen/order_switcher.dart';
-import 'package:green_oil_seekers/schedule_screen/order_switcher.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({super.key});
@@ -21,24 +20,25 @@ class ScheduleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const Center(
+      body: Center(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 80,
             ),
             Text(
               "Schedule",
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900),
+                color: Theme.of(context).colorScheme.secondary,
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Expanded(
+            const Expanded(
               child: OrderSwitcher(),
             ),
           ],

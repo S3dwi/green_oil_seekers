@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/models/order.dart';
 import 'package:green_oil_seekers/schedule_screen/orders_list/orders_list.dart';
 
+
 class OrderSwitcher extends StatefulWidget {
   const OrderSwitcher({super.key});
 
@@ -98,7 +99,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -116,7 +117,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -134,14 +135,14 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                 width: 175,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Center(
                   child: Text(
                     selectedIndex == 0 ? 'Ongoing' : 'History',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                     ),
@@ -149,6 +150,9 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 70,
+            )
           ],
         ),
         // Wrap Expanded widget in Flexible or wrap the entire Column with Expanded

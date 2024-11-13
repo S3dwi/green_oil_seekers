@@ -3,41 +3,41 @@ import 'package:flutter/material.dart';
 class RecycleButton extends StatelessWidget {
   const RecycleButton({
     super.key,
-    required this.onRecycleOil,
+    required this.orderFlow,
   });
 
-  final void Function() onRecycleOil;
+  final void Function() orderFlow;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        onRecycleOil();
+        orderFlow();
       },
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         padding: const EdgeInsets.symmetric(
           vertical: 10,
           horizontal: 10,
         ),
         //shadow looks only apply horizontally, need to improve
         elevation: 6, // This adds the shadow
-        shadowColor: Colors.black.withOpacity(0.9), // Shadow color
+        shadowColor: Theme.of(context).shadowColor, // Shadow color
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(width: 1),
+          const SizedBox(width: 1),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "Recycle Your Oil Now!",
                 style: TextStyle(
-                  color: Color(0xFFF8F8F8),
+                  color: Theme.of(context).colorScheme.onSecondary,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -45,7 +45,7 @@ class RecycleButton extends StatelessWidget {
               Text(
                 "Schedule your used oil pickup in seconds",
                 style: TextStyle(
-                  color: Color(0xFFF8F8F8),
+                  color: Theme.of(context).colorScheme.onSecondary,
                   fontSize: 15,
                   fontWeight: FontWeight.w300,
                 ),
@@ -54,7 +54,7 @@ class RecycleButton extends StatelessWidget {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Color(0xFFF8F8F8),
+            color: Theme.of(context).colorScheme.onPrimary,
             size: 16,
           ),
         ],

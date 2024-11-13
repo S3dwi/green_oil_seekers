@@ -23,7 +23,7 @@ class HelpCard extends StatelessWidget {
         child: Card(
           elevation: 6,
           shadowColor: Theme.of(context).shadowColor,
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).colorScheme.onPrimary,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -36,9 +36,10 @@ class HelpCard extends StatelessWidget {
                   children: [
                     Text(
                       titel,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     const SizedBox(
