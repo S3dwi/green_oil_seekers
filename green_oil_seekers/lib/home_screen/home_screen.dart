@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
-                      const Positioned(
+                      Positioned(
                         top: 60,
                         left: 16,
                         right: 16,
@@ -54,17 +54,19 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               'Be Recycled',
                               style: TextStyle(
-                                color: Colors.white,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                                 fontSize: 48,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
-                            SizedBox(height: 0),
+                            const SizedBox(height: 0),
                             Text(
                               'Help the planet & earn \nrewards!',
                               style: TextStyle(
-                                color: Colors.white,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w300,
                               ),
@@ -80,9 +82,9 @@ class HomeScreen extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           height: 58,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFF8F8F8),
-                            borderRadius: BorderRadius.only(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).disabledColor,
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -90,18 +92,25 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       // Address Section
-                      const Positioned(
+                      Positioned(
                         bottom: 22,
                         left: 16,
                         right: 16,
                         child: Row(
                           children: [
-                            Icon(Icons.location_on, color: Colors.green),
-                            SizedBox(width: 8),
+                            Icon(
+                              Icons.location_on,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'Company Address: Jeddah - Alrabwah 23553, Asbat Bin...',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
