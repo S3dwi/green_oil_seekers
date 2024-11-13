@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:green_oil_seekers/app_theme.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
-
-final theme = ThemeData(
-  useMaterial3: true,
-  scaffoldBackgroundColor: const Color(0xFFF8F8F8),
-  cardColor: const Color(0xFFFFFFFF),
-  // Primary color used for elements like buttons and icon.
-  primaryColor: const Color(0xFF47AB4D),
-  disabledColor: const Color(0xFFA9A9AC),
-  fontFamily: 'Lato',
-);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +20,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme,
+      theme: themeLight,
+      darkTheme: themeDark,
       themeMode: ThemeMode.system,
       home: const NavBar(), // Start at the HomeScreen
     );
