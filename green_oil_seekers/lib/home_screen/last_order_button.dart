@@ -20,8 +20,8 @@ class LastOrderButton extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         padding: const EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 10,
+          vertical: 11,
+          horizontal: 15,
         ),
         //shadow looks only apply horizontally, need to improve
         elevation: 6, // This adds the shadow
@@ -31,7 +31,7 @@ class LastOrderButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'View Last Purchases',
+            'View Last Order',
             style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontSize: 18,

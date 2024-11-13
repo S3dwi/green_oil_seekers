@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:green_oil_seekers/app_theme.dart';
-import 'package:green_oil_seekers/nav_bar.dart';
+import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +23,7 @@ class App extends StatelessWidget {
       theme: themeLight,
       darkTheme: themeDark,
       themeMode: ThemeMode.system,
-      home: const NavBar(
-        wantedPage: 0,
-      ), // Start at the HomeScreen
+      home: const SignInScreen(),
     );
   }
 }
