@@ -15,7 +15,9 @@ class OilTypeSelection extends StatefulWidget {
   });
 
   @override
-  _OilTypeSelectionState createState() => _OilTypeSelectionState();
+  State<StatefulWidget> createState() {
+    return _OilTypeSelectionState();
+  }
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {

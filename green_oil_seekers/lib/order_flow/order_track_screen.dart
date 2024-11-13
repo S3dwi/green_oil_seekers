@@ -24,7 +24,9 @@ class OrderTrackScreen extends StatefulWidget {
   });
 
   @override
-  _OrderTrackScreenState createState() => _OrderTrackScreenState();
+  State<StatefulWidget> createState() {
+    return _OrderTrackScreenState();
+  }
 }
 
 class _OrderTrackScreenState extends State<OrderTrackScreen> {

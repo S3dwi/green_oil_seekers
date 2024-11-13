@@ -9,16 +9,18 @@ class RangeSection extends StatefulWidget {
   final Function(double, double)? onRangeSelected;
 
   const RangeSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.unit,
     required this.min,
     required this.max,
     this.onRangeSelected,
-  }) : super(key: key);
+  });
 
   @override
-  _RangeSectionState createState() => _RangeSectionState();
+  State<StatefulWidget> createState() {
+    return _RangeSectionState();
+  }
 }
 
 class _RangeSectionState extends State<RangeSection> {
@@ -69,7 +71,9 @@ class _RangeSectionState extends State<RangeSection> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],
@@ -89,7 +93,9 @@ class _RangeSectionState extends State<RangeSection> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],

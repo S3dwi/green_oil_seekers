@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class PickOfferScreen extends StatefulWidget {
-  const PickOfferScreen({Key? key}) : super(key: key);
+  const PickOfferScreen({super.key});
 
   @override
-  _PickOfferScreenState createState() => _PickOfferScreenState();
+  State<StatefulWidget> createState() {
+    return _PickOfferScreenState();
+  }
 }
 
 class _PickOfferScreenState extends State<PickOfferScreen> {

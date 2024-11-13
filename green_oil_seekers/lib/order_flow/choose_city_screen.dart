@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:green_oil_seekers/primary_button.dart';
 
 import 'choose_offer_screen.dart';
 import 'payment_screen.dart';
 
 class ChooseCityScreen extends StatefulWidget {
-  const ChooseCityScreen({Key? key}) : super(key: key);
+  const ChooseCityScreen({super.key});
 
   @override
-  _ChooseCityScreenState createState() => _ChooseCityScreenState();
+  State<StatefulWidget> createState() {
+    return _ChooseCityScreenState();
+  }
 }
 
 class _ChooseCityScreenState extends State<ChooseCityScreen> {
@@ -153,41 +156,34 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
               ),
             ],
             const Spacer(),
-            ElevatedButton(
-              onPressed: selectedOfferDetails != null &&
-                      selectedCity != null &&
-                      selectedCompany != null
-                  ? () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => PaymentScreen(
-                            oilPrice: selectedOfferDetails!['price'].toDouble(),
-                            cityName: selectedCity!,
-                            companyName: selectedCompany!,
-                            oilType: selectedOfferDetails!['oilType'],
-                            qtyOil:
-                                selectedOfferDetails!['quantity'].toDouble(),
+            PrimaryButton(
+              onPressed: () {
+                selectedOfferDetails != null &&
+                        selectedCity != null &&
+                        selectedCompany != null
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PaymentScreen(
+                              oilPrice:
+                                  selectedOfferDetails!['price'].toDouble(),
+                              cityName: selectedCity!,
+                              companyName: selectedCompany!,
+                              oilType: selectedOfferDetails!['oilType'],
+                              qtyOil:
+                                  selectedOfferDetails!['quantity'].toDouble(),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedOfferDetails == null
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).colorScheme.primary,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'NEXT',
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-              ),
+                        );
+                      }
+                    : null;
+              },
+              backgroundColor: selectedOfferDetails == null
+                  ? Theme.of(context).disabledColor
+                  : Theme.of(context).colorScheme.primary,
+              label: 'NEXT',
+              vertical: 13,
+              horizontal: 145,
             ),
             const SizedBox(height: 30),
           ],

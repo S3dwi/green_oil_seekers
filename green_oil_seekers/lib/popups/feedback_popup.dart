@@ -5,13 +5,15 @@ class FeedbackPopup extends StatefulWidget {
   final ValueChanged<int> onSend;
 
   const FeedbackPopup({
-    Key? key,
+    super.key,
     required this.onClose,
     required this.onSend,
-  }) : super(key: key);
+  });
 
   @override
-  _FeedbackPopupState createState() => _FeedbackPopupState();
+  State<StatefulWidget> createState() {
+    return _FeedbackPopupState();
+  }
 }
 
 class _FeedbackPopupState extends State<FeedbackPopup> {
