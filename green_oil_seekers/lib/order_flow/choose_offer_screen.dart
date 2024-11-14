@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../primary_button.dart';
 import 'oil_type_selection_screen.dart';
 import 'pick_offer_screen.dart';
 import 'range_section_screen.dart';
@@ -45,8 +46,11 @@ class __ChooseOfferOverlayState extends State<_ChooseOfferOverlay> {
         appBar: AppBar(
           title: Text(isFiltering ? 'Offers' : 'Pick Offer'),
           centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back,
+                color: Theme.of(context).colorScheme.secondary),
             onPressed: () {
               if (!isFiltering) {
                 setState(() {
@@ -100,9 +104,12 @@ class __ChooseOfferOverlayState extends State<_ChooseOfferOverlay> {
             maxPrice = max;
           },
         ),
-        const Text(
+        Text(
           '*Note: price is per liter',
-          style: TextStyle(fontSize: 12, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).disabledColor,
+          ),
         ),
         const SizedBox(height: 16),
         RangeSection(
@@ -116,19 +123,17 @@ class __ChooseOfferOverlayState extends State<_ChooseOfferOverlay> {
           },
         ),
         const Spacer(),
-        ElevatedButton(
-          onPressed: isOilTypeSelected ? _onFindOffers : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isOilTypeSelected ? Colors.green : Colors.grey,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: const Text(
-            'FIND OFFERS',
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
+        PrimaryButton(
+          onPressed: isOilTypeSelected ? _onFindOffers : () {},
+          label: 'FIND OFFERS',
+          backgroundColor: isOilTypeSelected
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).disabledColor,
+          textColor: Theme.of(context).colorScheme.onPrimary,
+          verticalPadding: 16,
+          horizontalPadding: 130,
+          fontSize: 18,
+          isEnabled: isOilTypeSelected,
         ),
       ],
     );

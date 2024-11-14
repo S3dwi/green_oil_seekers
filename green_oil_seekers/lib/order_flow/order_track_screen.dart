@@ -62,7 +62,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: Padding(
@@ -76,7 +76,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
             const SizedBox(height: 20),
             feedbackGiven ? _buildThankYouMessage() : _buildFeedbackButton(),
             const Spacer(),
-            _buildBackToHomeButton(),
+            _buildBackToHomeButton(context),
             const SizedBox(height: 16),
           ],
         ),
@@ -90,7 +90,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: Theme.of(context).disabledColor,
             shape: BoxShape.circle,
           ),
           child: const Icon(
@@ -100,12 +100,12 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        const Text(
+        Text(
           'Processing',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.grey,
+            color: Theme.of(context).disabledColor,
           ),
         ),
       ],
@@ -116,11 +116,11 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
           ),
@@ -145,7 +145,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildInvoiceButton(),
-              _buildKeepTrackButton(),
+              _buildKeepTrackButton(context),
             ],
           ),
         ],
@@ -160,18 +160,18 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
         padding: const EdgeInsets.symmetric(vertical: 14),
         margin: const EdgeInsets.symmetric(horizontal: 50),
         decoration: BoxDecoration(
-          color: Colors.green,
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(25),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.feedback, color: Colors.white),
-            SizedBox(width: 8),
+            const Icon(Icons.feedback, color: Colors.white),
+            const SizedBox(width: 8),
             Text(
               'Give Feedback',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -183,11 +183,11 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
   }
 
   Widget _buildThankYouMessage() {
-    return const Center(
+    return Center(
       child: Text(
         'Thank you for your feedback!',
         style: TextStyle(
-          color: Colors.green,
+          color: Theme.of(context).colorScheme.primary,
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
@@ -195,7 +195,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     );
   }
 
-  Widget _buildBackToHomeButton() {
+  Widget _buildBackToHomeButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         Navigator.of(context).pushAndRemoveUntil(
@@ -204,16 +204,16 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
         );
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         minimumSize: const Size.fromHeight(50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: const Text(
+      child: Text(
         'BACK TO HOME',
         style: TextStyle(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.onPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
@@ -228,33 +228,39 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
       },
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(150, 45),
-        side: const BorderSide(color: Colors.green),
+        side: BorderSide(color: Theme.of(context).colorScheme.primary),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: const Text(
+      child: Text(
         'Invoice',
-        style: TextStyle(color: Colors.green, fontSize: 16),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontSize: 16,
+        ),
       ),
     );
   }
 
-  Widget _buildKeepTrackButton() {
+  Widget _buildKeepTrackButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         // Code to track order using GPS functionality
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         minimumSize: const Size(150, 45),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: const Text(
+      child: Text(
         'Keep Track',
-        style: TextStyle(color: Colors.white, fontSize: 16),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -265,7 +271,10 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ),
         if (isOrderId)
           Row(
@@ -279,13 +288,16 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: value));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Order ID Copied")),
+                    SnackBar(
+                      content: const Text("Order ID Copied"),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
                   );
                 },
-                child: const Icon(
+                child: Icon(
                   Icons.copy,
                   size: 16,
-                  color: Colors.grey,
+                  color: Theme.of(context).disabledColor,
                 ),
               ),
             ],

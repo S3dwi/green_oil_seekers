@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 class OilTypeSelection extends StatefulWidget {
   final List<String> oilTypes;
   final Function(List<String>) onSelected;
-  final Color selectedColor;
-  final Color unselectedColor;
 
   const OilTypeSelection({
     super.key,
     required this.onSelected,
     this.oilTypes = const ['Cooking Oil', 'Motor Oil', 'Lubricating Oil'],
-    this.selectedColor = Colors.green,
-    this.unselectedColor = Colors.grey,
   });
 
   @override
@@ -53,14 +49,21 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.grey[200] : Colors.transparent,
+        backgroundColor: isSelected
+            ? Theme.of(context).colorScheme.onPrimary.withOpacity(0.1)
+            : Colors.transparent,
         side: BorderSide(
-            color: isSelected ? widget.selectedColor : widget.unselectedColor),
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).disabledColor,
+        ),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: isSelected ? widget.selectedColor : Colors.black,
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.secondary,
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../primary_button.dart';
+
 class PickOfferScreen extends StatefulWidget {
   const PickOfferScreen({super.key});
 
@@ -50,8 +52,8 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
         Expanded(
           child: ListView.separated(
             itemCount: offers.length,
-            separatorBuilder: (context, index) => const Divider(
-              color: Colors.grey,
+            separatorBuilder: (context, index) => Divider(
+              color: Theme.of(context).disabledColor,
               thickness: 0.5,
             ),
             itemBuilder: (context, index) {
@@ -65,7 +67,7 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                   });
                 },
                 child: Card(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -88,9 +90,12 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                                 children: [
                                   Text(
                                     offer['oilType'],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -106,8 +111,8 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                                   ? Icons.radio_button_checked
                                   : Icons.radio_button_unchecked,
                               color: selectedOfferIndex == index
-                                  ? Colors.green
-                                  : Colors.grey,
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).disabledColor,
                             ),
                           ],
                         ),
@@ -116,8 +121,8 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                           alignment: Alignment.bottomRight,
                           child: Text(
                             '${finalPrice.toStringAsFixed(2)} SAR',
-                            style: const TextStyle(
-                              color: Colors.green,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -133,21 +138,18 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
         ),
         Padding(
           padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
-            onPressed: selectedOfferIndex != null ? _onChooseOffer : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  selectedOfferIndex != null ? Colors.green : Colors.grey,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 130),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              'CHOOSE',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
+          child: PrimaryButton(
+            onPressed: () {
+              if (selectedOfferIndex != null) _onChooseOffer();
+            },
+            backgroundColor: selectedOfferIndex != null
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).disabledColor,
+            label: 'CHOOSE',
+            textColor: Theme.of(context).colorScheme.onPrimary,
+            verticalPadding: 16.0,
+            horizontalPadding: 100.0,
+            isEnabled: selectedOfferIndex != null,
           ),
         ),
       ],

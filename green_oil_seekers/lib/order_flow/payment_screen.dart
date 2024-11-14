@@ -33,7 +33,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate final oil price based on quantity and price per liter
     final double finalOilPrice = widget.oilPrice * widget.qtyOil;
     final double totalPayment = finalOilPrice + serviceCharge;
     final arrivalDate = DateTime.now().add(const Duration(days: 3));
@@ -50,7 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: Padding(
@@ -68,8 +67,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   isServiceExpanded = !isServiceExpanded;
                 });
               },
-              child: _buildPaymentRow('Services', '+$serviceCharge SAR',
-                  isExpandable: true),
+              child: _buildPaymentRow(
+                'Services',
+                '+$serviceCharge SAR',
+                isExpandable: true,
+              ),
             ),
             if (isServiceExpanded) ...[
               Padding(
@@ -77,89 +79,64 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildPaymentRow('Delivery', '+$deliveryCharge SAR',
-                        fontSize: 14),
                     _buildPaymentRow(
-                        'Collection of oils', '+$collectionCharge SAR',
-                        fontSize: 14),
+                      'Delivery',
+                      '+$deliveryCharge SAR',
+                      fontSize: 14,
+                    ),
+                    _buildPaymentRow(
+                      'Collection of oils',
+                      '+$collectionCharge SAR',
+                      fontSize: 14,
+                    ),
                   ],
                 ),
               ),
             ],
             const Divider(),
             _buildPaymentRow(
-                'Total Payment', '${totalPayment.toStringAsFixed(1)} SAR',
-                isBold: true, color: Colors.green),
+              'Total Payment',
+              '${totalPayment.toStringAsFixed(1)} SAR',
+              isBold: true,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             const Divider(),
             const SizedBox(height: 16),
-            const Text('Payment Method',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const Text(
+              'Payment Method',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
             const SizedBox(height: 8),
             _buildPaymentMethodOption('Cash', 'assets/images/cash.png'),
             _buildPaymentMethodOption('Paypal', 'assets/images/paypal.png'),
             const Spacer(),
             PrimaryButton(
-              onPressed: () {
-                selectedPaymentMethod != null
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderSummary(
-                              totalPayment: totalPayment,
-                              cityName: widget.cityName,
-                              companyName: widget.companyName,
-                              oilType: widget.oilType,
-                              qtyOil: widget.qtyOil,
-                              arrivalDate: arrivalDate,
-                            ),
+              onPressed: selectedPaymentMethod != null
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderSummary(
+                            totalPayment: totalPayment,
+                            cityName: widget.cityName,
+                            companyName: widget.companyName,
+                            oilType: widget.oilType,
+                            qtyOil: widget.qtyOil,
+                            arrivalDate: arrivalDate,
                           ),
-                        );
-                      }
-                    : null;
-              },
+                        ),
+                      );
+                    }
+                  : () {}, // Pass an empty function if null to avoid type mismatch
               backgroundColor: selectedPaymentMethod != null
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).disabledColor,
               label: 'NEXT',
-              vertical: 13,
-              horizontal: 145,
+              textColor: Theme.of(context).colorScheme.onPrimary,
+              verticalPadding: 16.0,
+              horizontalPadding: 100.0,
+              isEnabled: selectedPaymentMethod != null,
             ),
-
-            // ElevatedButton(
-            //   onPressed: selectedPaymentMethod != null
-            //       ? () {
-            //           Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //               builder: (context) => OrderSummary(
-            //                 totalPayment: totalPayment,
-            //                 cityName: widget.cityName,
-            //                 companyName: widget.companyName,
-            //                 oilType: widget.oilType,
-            //                 qtyOil: widget.qtyOil,
-            //                 arrivalDate: arrivalDate,
-            //               ),
-            //             ),
-            //           );
-            //         }
-            //       : null,
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor:
-            //         selectedPaymentMethod != null ? Colors.green : Colors.grey,
-            //     minimumSize: const Size.fromHeight(50),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //   ),
-            //   child: const Text(
-            //     'NEXT',
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 18,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // ),
             const SizedBox(height: 16),
           ],
         ),
@@ -167,11 +144,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildPaymentRow(String label, String value,
-      {bool isBold = false,
-      bool isExpandable = false,
-      double fontSize = 16,
-      Color color = Colors.black}) {
+  Widget _buildPaymentRow(
+    String label,
+    String value, {
+    bool isBold = false,
+    bool isExpandable = false,
+    double fontSize = 16,
+    Color color = Colors.black,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -182,12 +162,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               style: TextStyle(
                 fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
                 fontSize: fontSize,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
             if (isExpandable)
               Icon(
                 isServiceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                color: Colors.grey,
+                color: Theme.of(context).disabledColor,
               ),
           ],
         ),
@@ -208,11 +189,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
           ),
@@ -222,7 +203,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         children: [
           Radio<String>(
             value: label,
-            activeColor: Colors.green,
+            activeColor: Theme.of(context).colorScheme.primary,
             groupValue: selectedPaymentMethod,
             onChanged: (String? value) {
               setState(() {

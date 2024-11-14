@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/primary_button.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/profile_screen/edit_account_card.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -124,8 +124,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: () {},
             backgroundColor: Theme.of(context).colorScheme.primary,
             label: "Save",
-            vertical: 13,
-            horizontal: 145,
           ),
           const SizedBox(
             height: 70,

@@ -177,8 +177,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               onPressed: _createAccount,
               backgroundColor: Theme.of(context).colorScheme.primary,
               label: 'Sign Up',
-              vertical: 13,
-              horizontal: 145,
             ),
 
             // Sign-Up button

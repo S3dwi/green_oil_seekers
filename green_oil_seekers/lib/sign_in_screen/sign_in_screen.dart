@@ -3,7 +3,6 @@ import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
 import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
-
 import 'package:green_oil_seekers/sign_up_screen/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -182,8 +181,6 @@ class _SignInScreenState extends State<SignInScreen> {
               onPressed: _signIn,
               backgroundColor: Theme.of(context).colorScheme.primary,
               label: 'Sign in',
-              vertical: 13,
-              horizontal: 145,
             ),
 
             // Sign-in button

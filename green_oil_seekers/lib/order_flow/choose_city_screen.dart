@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../primary_button.dart';
 import 'choose_offer_screen.dart';
 import 'payment_screen.dart';
 
@@ -155,41 +156,33 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
               ),
             ],
             const Spacer(),
-            ElevatedButton(
-              onPressed: selectedOfferDetails != null &&
-                      selectedCity != null &&
-                      selectedCompany != null
-                  ? () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => PaymentScreen(
-                            oilPrice: selectedOfferDetails!['price'].toDouble(),
-                            cityName: selectedCity!,
-                            companyName: selectedCompany!,
-                            oilType: selectedOfferDetails!['oilType'],
-                            qtyOil:
-                                selectedOfferDetails!['quantity'].toDouble(),
-                          ),
-                        ),
-                      );
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedOfferDetails == null
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).colorScheme.primary,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'NEXT',
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-              ),
+            PrimaryButton(
+              label: 'NEXT',
+              onPressed: () {
+                if (selectedOfferDetails != null &&
+                    selectedCity != null &&
+                    selectedCompany != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PaymentScreen(
+                        oilPrice: selectedOfferDetails!['price'].toDouble(),
+                        cityName: selectedCity!,
+                        companyName: selectedCompany!,
+                        oilType: selectedOfferDetails!['oilType'],
+                        qtyOil: selectedOfferDetails!['quantity'].toDouble(),
+                      ),
+                    ),
+                  );
+                }
+              },
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.onPrimary,
+              verticalPadding: 16,
+              horizontalPadding: 145,
+              fontSize: 24,
+              isEnabled: selectedOfferDetails != null &&
+                  selectedCity != null &&
+                  selectedCompany != null,
             ),
             const SizedBox(height: 30),
           ],

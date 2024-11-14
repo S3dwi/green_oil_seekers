@@ -56,7 +56,10 @@ class _RangeSectionState extends State<RangeSection> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ),
         const SizedBox(height: 8),
         Row(
@@ -70,6 +73,9 @@ class _RangeSectionState extends State<RangeSection> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).disabledColor,
+                  ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -78,10 +84,18 @@ class _RangeSectionState extends State<RangeSection> {
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],
                 onChanged: (value) => _onRangeChanged(),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
             ),
             const SizedBox(width: 16),
-            const Text('to'),
+            Text(
+              'to',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: TextField(
@@ -92,6 +106,9 @@ class _RangeSectionState extends State<RangeSection> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).disabledColor,
+                  ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -100,6 +117,9 @@ class _RangeSectionState extends State<RangeSection> {
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                 ],
                 onChanged: (value) => _onRangeChanged(),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
             ),
           ],

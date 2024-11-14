@@ -12,7 +12,7 @@ class ConfirmationScreen extends StatelessWidget {
   final String companyName;
   final String arrivalDate;
   final String arrivalTime;
-  final String orderId; // Add the orderId as a final property
+  final String orderId;
 
   ConfirmationScreen({
     super.key,
@@ -24,7 +24,6 @@ class ConfirmationScreen extends StatelessWidget {
     required this.arrivalTime,
   }) : orderId = _generateOrderId();
 
-  // Generate a unique order ID
   static String _generateOrderId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
@@ -35,7 +34,7 @@ class ConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
       body: Stack(
         children: [
           Positioned.fill(
@@ -54,20 +53,23 @@ class ConfirmationScreen extends StatelessWidget {
                   height: 100,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   "Order has been placed successfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.green,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   "Your support helps the environment\nthrough recycling!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 16,
+                  ),
                 ),
                 const SizedBox(height: 50),
                 SizedBox(
@@ -90,7 +92,7 @@ class ConfirmationScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -99,10 +101,10 @@ class ConfirmationScreen extends StatelessWidget {
                         horizontal: 100,
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "VIEW ORDER",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -121,10 +123,10 @@ class ConfirmationScreen extends StatelessWidget {
                       (Route<dynamic> route) => false,
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     "BACK TO HOME",
                     style: TextStyle(
-                      color: Colors.green,
+                      color: Theme.of(context).colorScheme.primary,
                       decoration: TextDecoration.underline,
                       fontSize: 16,
                     ),

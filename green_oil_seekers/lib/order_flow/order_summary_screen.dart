@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Add intl package for date formatting
+import 'package:green_oil_seekers/primary_button.dart';
+import 'package:intl/intl.dart';
 
 import 'confirmation_screen.dart';
 
@@ -52,7 +53,7 @@ class OrderSummary extends StatelessWidget {
               'Total Payment',
               '${totalPayment.toStringAsFixed(1)} SAR',
               isBold: true,
-              color: Colors.green,
+              color: Theme.of(context).colorScheme.primary,
             ),
             const Divider(),
             _buildSummaryRow('City Name', cityName),
@@ -61,30 +62,18 @@ class OrderSummary extends StatelessWidget {
             const Divider(),
             _buildSummaryRow('Arrival Date', formattedArrivalDate),
             const Spacer(),
-            _buildPayButton(context),
+            PrimaryButton(
+              label: 'PAY',
+              onPressed: () => _navigateToConfirmation(context),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.onPrimary,
+              verticalPadding: 16,
+              horizontalPadding: 100,
+              fontSize: 24,
+              isEnabled: true,
+            ),
             const SizedBox(height: 16),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPayButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => _navigateToConfirmation(context),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        minimumSize: const Size.fromHeight(50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: const Text(
-        'PAY',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
         ),
       ),
     );
