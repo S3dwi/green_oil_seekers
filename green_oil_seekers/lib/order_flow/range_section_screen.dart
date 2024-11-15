@@ -14,7 +14,7 @@ class RangeSection extends StatefulWidget {
     required this.unit,
     required this.min,
     required this.max,
-    this.onRangeSelected,
+    this.onRangeSelected, required bool showTitle,
   });
 
   @override

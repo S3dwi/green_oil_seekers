@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:green_oil_seekers/app_theme.dart';
+import 'package:green_oil_seekers/home_screen/home_screen.dart';
 import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
       theme: themeLight,
       darkTheme: themeDark,
       themeMode: ThemeMode.system,
-      home: const SignInScreen(),
+      home: const HomeScreen(),
     );
   }
 }

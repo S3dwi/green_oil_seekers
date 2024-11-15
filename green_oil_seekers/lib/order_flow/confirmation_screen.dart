@@ -3,16 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 
-import 'order_track_screen.dart';
+import 'order_details_screen.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final String oilType;
   final double qtyOil;
   final String cityName;
   final String companyName;
-  final String arrivalDate;
-  final String arrivalTime;
   final String orderId;
+  final String customerLocation;
+  final String pickupDate;
 
   ConfirmationScreen({
     super.key,
@@ -20,8 +20,9 @@ class ConfirmationScreen extends StatelessWidget {
     required this.qtyOil,
     required this.cityName,
     required this.companyName,
-    required this.arrivalDate,
-    required this.arrivalTime,
+    required this.customerLocation,
+    required this.pickupDate,
+    required double totalAmount,
   }) : orderId = _generateOrderId();
 
   static String _generateOrderId() {
@@ -79,14 +80,14 @@ class ConfirmationScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => OrderTrackScreen(
+                          builder: (context) => OrderDetailsScreen(
                             orderId: orderId,
                             oilType: oilType,
-                            qtyOil: qtyOil,
+                            qtyOil: 1,
                             cityName: cityName,
                             companyName: companyName,
-                            arrivalDate: arrivalDate,
-                            arrivalTime: arrivalTime,
+                            customerLocation: customerLocation,
+                            pickupDate: pickupDate,
                           ),
                         ),
                       );

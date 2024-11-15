@@ -54,9 +54,9 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
-    this.verticalPadding = 16.0,
-    this.horizontalPadding = 145.0,
-    this.fontSize = 24.0,
+    this.verticalPadding = 20.0,
+    this.horizontalPadding = 30.0,
+    this.fontSize = 18.0,
     this.isEnabled = true,
   }) : super(key: key);
 
@@ -68,9 +68,8 @@ class PrimaryButton extends StatelessWidget {
   final double horizontalPadding;
   final double fontSize;
   final bool isEnabled;
-  
-  // Rest of the code remains the same
 
+  // Rest of the code remains the same
 
   @override
   Widget build(BuildContext context) {
@@ -107,5 +106,4 @@ class PrimaryButton extends StatelessWidget {
       ),
     );
   }
-  
 }
