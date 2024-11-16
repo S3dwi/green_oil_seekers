@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../home_screen/home_screen.dart';
 import '../primary_button.dart';
+import 'invoice_screen.dart';
+import 'track_order_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final String orderId;
@@ -10,8 +14,11 @@ class OrderDetailsScreen extends StatelessWidget {
   final String companyName;
   final String customerLocation;
   final String pickupDate;
+  final String userEmail;
 
-  const OrderDetailsScreen({
+  final String invoiceId = Uuid().v4().substring(0, 8).toUpperCase();
+
+  OrderDetailsScreen({
     Key? key,
     required this.orderId,
     required this.oilType,
@@ -19,7 +26,7 @@ class OrderDetailsScreen extends StatelessWidget {
     required this.companyName,
     required this.customerLocation,
     required this.pickupDate,
-    required String cityName,
+    required this.userEmail,
   }) : super(key: key);
 
   @override
@@ -90,7 +97,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildDetailRow('Order ID', orderId),
+                    _buildOrderIdRow(context),
                     _buildDivider(),
                     _buildDetailRow('Oil Type', oilType),
                     _buildDivider(),
@@ -102,51 +109,74 @@ class OrderDetailsScreen extends StatelessWidget {
                         _truncateLocation(customerLocation)),
                     _buildDivider(),
                     _buildDetailRow('Pickup Date', pickupDate),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InvoiceScreen(
+                                    invoiceId: invoiceId,
+                                    userEmail: userEmail,
+                                    customerName: "Raef Shah",
+                                    oilType: oilType,
+                                    companyName: companyName,
+                                    quantity: qtyOil,
+                                    customerContactInfo: "RaefAshah@gmail.com",
+                                    companyContactInfo: "JanBurger@gmail.com",
+                                    dateOfIssue: DateTime.now(),
+                                    orderId: orderId,
+                                  ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              'Invoice',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      TrackOrderScreen(orderId: orderId),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              'Track Order',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // Invoice button functionality to be implemented
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Invoice',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Track button functionality to be implemented
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Track Order',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
             ),
             const Spacer(),
             PrimaryButton(
@@ -162,6 +192,33 @@ class OrderDetailsScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildOrderIdRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Order ID', style: TextStyle(fontSize: 16)),
+        Row(
+          children: [
+            Text(
+              orderId.toUpperCase(),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: orderId));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Order ID copied')),
+                );
+              },
+              child: const Icon(Icons.copy, size: 16, color: Colors.grey),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

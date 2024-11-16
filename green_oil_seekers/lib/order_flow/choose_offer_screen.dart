@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 import '../primary_button.dart';
@@ -10,9 +12,17 @@ Future<Map<String, dynamic>?> showOfferSheet(BuildContext context) {
     context: context,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius:
+          BorderRadius.vertical(top: Radius.circular(30)), // Rounded edges
     ),
-    builder: (context) => const ChooseOfferOverlay(),
+    builder: (context) => Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(30)), // Rounded edges
+      ),
+      child: const ChooseOfferOverlay(),
+    ),
   );
 }
 
@@ -40,9 +50,17 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
         context: context,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(30)), // Rounded edges
         ),
-        builder: (context) => const PickOfferScreen(),
+        builder: (context) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(30)), // Rounded edges
+          ),
+          child: const PickOfferScreen(),
+        ),
       );
     }
   }
@@ -52,7 +70,7 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
     return FractionallySizedBox(
       heightFactor: 0.9,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text(
             'Offers',
@@ -72,10 +90,10 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Divider(color: Theme.of(context).disabledColor),
-              const SizedBox(height: 16),
+              const SizedBox(height: 1),
               const Text(
-                'Oil type',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Oil Type',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               OilTypeSelection(
@@ -86,7 +104,7 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
                 },
               ),
               Divider(color: Theme.of(context).disabledColor),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               RangeSection(
                 title: 'Quantity',
                 unit: 'L',
@@ -96,10 +114,13 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
                   minQuantity = min;
                   maxQuantity = max;
                 },
-                showTitle: false,
+                titleStyle: const TextStyle(
+                  fontSize: 20, // Custom font size
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Divider(color: Theme.of(context).disabledColor),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               RangeSection(
                 title: 'Price',
                 unit: 'SAR',
@@ -109,7 +130,10 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
                   minPrice = min;
                   maxPrice = max;
                 },
-                showTitle: false,
+                titleStyle: const TextStyle(
+                  fontSize: 20, // Custom font size
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 '*Note: price is per liter',
@@ -119,7 +143,7 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
                 ),
               ),
               Divider(color: Theme.of(context).disabledColor),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               RangeSection(
                 title: 'Distance',
                 unit: 'KM',
@@ -129,7 +153,10 @@ class _ChooseOfferOverlayState extends State<ChooseOfferOverlay> {
                   minDistance = min;
                   maxDistance = max;
                 },
-                showTitle: false,
+                titleStyle: const TextStyle(
+                  fontSize: 20, // Custom font size
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Spacer(),
               PrimaryButton(

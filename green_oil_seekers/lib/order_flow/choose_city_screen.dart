@@ -17,24 +17,28 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   String? selectedCity;
   String? selectedCompany;
   String selectedOffer = '';
+
   final List<String> cities = [
     'Jeddah',
     'Riyadh',
     'Al Madinah',
     'Khobar',
     'Makkah',
-    'Dammam'
+    'Dammam',
   ];
-  final List<String> companies = ['Moblpetroleum', 'Green Oil'];
 
-  void _onChooseOffer() {
-    showOfferSheet(context).then((selectedOfferDetails) {
-      if (selectedOfferDetails != null) {
-        setState(() {
-          selectedOffer = 'Offer Selected';
-        });
-      }
-    });
+  final List<String> companies = [
+    'Moblpetroleum',
+    'Green Oil',
+  ];
+
+  void _onChooseOffer() async {
+    final selectedOfferDetails = await showOfferSheet(context);
+    if (selectedOfferDetails != null) {
+      setState(() {
+        selectedOffer = 'Offer Selected';
+      });
+    }
   }
 
   @override
@@ -67,7 +71,7 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
           children: [
             DropdownWidget(
               selectedValue: selectedCity,
-              hint: 'Choose city',
+              hint: 'Choose City',
               items: cities,
               onChanged: (value) {
                 setState(() {
@@ -123,14 +127,18 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
             color: Colors.black.withOpacity(0.24),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: ListTile(
         title: Text(
-          'Choose Offer',
-          style: TextStyle(color: colorScheme.secondary.withOpacity(0.6)),
+          selectedOffer.isEmpty ? 'Choose Offer' : selectedOffer,
+          style: TextStyle(
+            color: selectedOffer.isEmpty
+                ? colorScheme.secondary.withOpacity(0.6)
+                : colorScheme.primary,
+          ),
         ),
         trailing: Icon(Icons.tune, color: colorScheme.secondary),
         onTap: _onChooseOffer,
@@ -139,6 +147,6 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   }
 
   void _onNextPressed() {
-    // Navigate to the next screen or perform an action
+    // Implement navigation to the next screen
   }
 }

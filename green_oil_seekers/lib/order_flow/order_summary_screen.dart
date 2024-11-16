@@ -12,19 +12,18 @@ class OrderSummaryScreen extends StatelessWidget {
   final String pickupDate;
 
   const OrderSummaryScreen({
-    Key? key,
+    super.key,
     required this.companyName,
     required this.oilType,
     required this.qtyOil,
     required this.oilPrice,
     required this.customerLocation,
     required this.pickupDate,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final totalPayment =
-        (qtyOil * oilPrice) + 50; // Adding service fee of SAR 50
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +45,7 @@ class OrderSummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: colorScheme.onPrimary,
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -56,19 +55,21 @@ class OrderSummaryScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSummaryRow('Company Name', companyName),
+                    _buildSummaryRow(context, 'Company Name', companyName),
                     _buildDivider(),
-                    _buildSummaryRow('Oil Type', oilType),
+                    _buildSummaryRow(context, 'Oil Type', oilType),
                     _buildDivider(),
-                    _buildSummaryRow('Estimated Quantity', '$qtyOil L'),
+                    _buildSummaryRow(
+                        context, 'Estimated Quantity', '$qtyOil L'),
                     _buildDivider(),
-                    _buildSummaryRow('Customer Location', customerLocation,
+                    _buildSummaryRow(
+                        context, 'Customer Location', customerLocation,
                         isTruncated: true),
                     _buildDivider(),
-                    _buildSummaryRow('Pickup Date', pickupDate),
+                    _buildSummaryRow(context, 'Pickup Date', pickupDate),
                     _buildDivider(),
-                    _buildSummaryRow('Offer Price',
-                        '${(oilPrice * qtyOil).toStringAsFixed(2)} SAR'),
+                    _buildSummaryRow(context, 'Offer Price',
+                        '${(oilPrice * qtyOil).toStringAsFixed(0)} SAR'),
                   ],
                 ),
               ),
@@ -98,25 +99,38 @@ class OrderSummaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value,
+  Widget _buildSummaryRow(BuildContext context, String label, String value,
       {bool isTruncated = false}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 16)),
-        SizedBox(
-          width: 150, // Limiting width for text truncation
+        Expanded(
+          flex: 4, // Adjust the width ratio of the label
+          child: Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
+        Expanded(
+          flex: 2, // Adjust the width ratio of the value
           child: Text(
             value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             overflow:
                 isTruncated ? TextOverflow.ellipsis : TextOverflow.visible,
             maxLines: 1,
+            textAlign: TextAlign.start,
           ),
         ),
       ],
     );
   }
 
-  Divider _buildDivider() => Divider(color: Colors.grey.shade300);
+  Divider _buildDivider() => Divider(color: Colors.grey.shade400);
 }

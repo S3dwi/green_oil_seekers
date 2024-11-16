@@ -12,14 +12,14 @@ class PaymentScreen extends StatefulWidget {
   final double oilPrice;
 
   const PaymentScreen({
-    Key? key,
+    super.key,
     required this.oilType,
     required this.qtyOil,
     required this.companyName,
     required this.customerLocation,
     required this.pickupDate,
     required this.oilPrice,
-  }) : super(key: key);
+  });
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
@@ -32,6 +32,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final double totalPrice =
         widget.oilPrice * widget.qtyOil + 50; // 50 SAR service fee
+
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +55,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
-              color: Colors.white,
+              color: colorScheme.onPrimary,
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -64,16 +66,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildPriceRow(
-                        'Oil Price', '${widget.oilPrice * widget.qtyOil} SAR'),
-                    _buildPriceRow('Services', '50 SAR'),
+                      'Oil Price',
+                      '${widget.oilPrice.toInt() * widget.qtyOil} SAR',
+                      fontSize: 18,
+                    ),
+                    _buildPriceRow('Services', '50 SAR', fontSize: 18),
                     const Divider(),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: _buildPriceRow(
                         'Total Payment',
-                        '${totalPrice.toStringAsFixed(2)} SAR',
+                        '${totalPrice.toInt()} SAR',
                         isBold: true,
-                        fontSize: 18,
+                        fontSize: 20,
                       ),
                     ),
                   ],
@@ -83,7 +88,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             const SizedBox(height: 24),
             const Text(
               'Payment Method',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             _buildPaymentOption('Paypal', 'assets/images/paypal.png'),
@@ -110,12 +115,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     }
                   : () {},
               label: 'NEXT',
-              textColor: Colors.white, // Ensuring button text is white
+              textColor: Theme.of(context).colorScheme.onSecondary,
               backgroundColor: selectedPaymentMethod != null
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+                  ? colorScheme.primary
+                  : Theme.of(context).disabledColor,
               verticalPadding: 16.0,
-              horizontalPadding: 100.0,
+              horizontalPadding: 140.0,
               isEnabled: selectedPaymentMethod != null,
             ),
           ],
@@ -131,7 +136,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+            ),
+          ),
           Text(
             amount,
             style: TextStyle(
@@ -153,7 +163,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         });
       },
       child: Card(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onPrimary,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -177,7 +187,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Text(
                 method,
                 style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
           ),

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class OilTypeSelection extends StatefulWidget {
@@ -10,6 +12,11 @@ class OilTypeSelection extends StatefulWidget {
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {
+  final List<String> oilTypes = [
+    'Cooking Oil',
+    'Motor Oil',
+    'Lubricating Oil',
+  ];
   List<String> selectedOilTypes = [];
 
   void _onOilTypeToggle(String oilType) {
@@ -27,34 +34,41 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 8.0,
-      children: [
-        _buildOilTypeButton('Cooking Oil'),
-        _buildOilTypeButton('Motor Oil'),
-        _buildOilTypeButton('Lubricating Oil'),
-      ],
+      children:
+          oilTypes.map((oilType) => _buildOilTypeButton(oilType)).toList(),
     );
   }
 
   Widget _buildOilTypeButton(String oilType) {
     final isSelected = selectedOilTypes.contains(oilType);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Color(0xFF448E49),
-        backgroundColor: isSelected ? Color(0xFFD9D9D9) : Colors.white,
+        foregroundColor:
+            isSelected ? colorScheme.primary : colorScheme.secondary,
+        backgroundColor: isSelected
+            ? colorScheme.onPrimary.withOpacity(0.2)
+            : colorScheme.onPrimary,
         side: BorderSide(
-          color: isSelected ? Color(0xFF448E49) : Colors.grey,
+          color: isSelected
+              ? colorScheme.primary
+              : Theme.of(context)
+                  .disabledColor, // Unselected: gray, Selected: primary
           width: 1,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        textStyle: TextStyle(
-          color: isSelected ? Color(0xFF448E49) : Colors.black,
-        ),
       ),
       onPressed: () => _onOilTypeToggle(oilType),
-      child: Text(oilType),
+      child: Text(
+        oilType,
+        style: TextStyle(
+          color: isSelected ? colorScheme.primary : colorScheme.secondary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

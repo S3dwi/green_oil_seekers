@@ -49,16 +49,16 @@ import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
     this.verticalPadding = 20.0,
     this.horizontalPadding = 30.0,
-    this.fontSize = 18.0,
+    this.fontSize = 20.0,
     this.isEnabled = true,
-  }) : super(key: key);
+  });
 
   final String label;
   final void Function() onPressed;

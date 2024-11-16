@@ -7,9 +7,6 @@ version: 1.0.0+1
 environment:
   sdk: ^3.5.3
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
 dependencies:
   flutter:
     sdk: flutter
@@ -17,27 +14,27 @@ dependencies:
   intl: ^0.19.0
   url_launcher: ^6.1.7
   image_picker: ^1.1.2
+  uuid: ^3.0.6 # Add the uuid package here
+  pdf: ^3.6.1
+  printing: ^5.11.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # Encourages good coding practices
   flutter_lints: ^4.0.0
 
-# The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
     - assets/icon/
 
-  # To add custom fonts to your application, add a fonts section here,
   fonts:
     - family: Lato
       fonts:
         - asset: assets/fonts/Lato_Regular.ttf
+
 # The following section is specific to Flutter Native Splash.
 # It is used to customize the launch screen and app icon for different platforms.
 # flutter_native_splash:

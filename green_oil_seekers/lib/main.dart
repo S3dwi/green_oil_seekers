@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:green_oil_seekers/app_theme.dart';
 import 'package:green_oil_seekers/home_screen/home_screen.dart';
-import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

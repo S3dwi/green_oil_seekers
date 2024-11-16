@@ -34,8 +34,10 @@ class ConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: colorScheme.onPrimary,
       body: Stack(
         children: [
           Positioned.fill(
@@ -58,7 +60,7 @@ class ConfirmationScreen extends StatelessWidget {
                   "Order has been placed successfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: colorScheme.primary,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -68,7 +70,7 @@ class ConfirmationScreen extends StatelessWidget {
                   "Your support helps the environment\nthrough recycling!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: colorScheme.secondary,
                     fontSize: 16,
                   ),
                 ),
@@ -83,17 +85,18 @@ class ConfirmationScreen extends StatelessWidget {
                           builder: (context) => OrderDetailsScreen(
                             orderId: orderId,
                             oilType: oilType,
-                            qtyOil: 1,
-                            cityName: cityName,
+                            qtyOil: qtyOil.toInt(),
                             companyName: companyName,
                             customerLocation: customerLocation,
                             pickupDate: pickupDate,
+                            userEmail:
+                                '', // Pass user email dynamically if needed
                           ),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -105,7 +108,7 @@ class ConfirmationScreen extends StatelessWidget {
                     child: Text(
                       "VIEW ORDER",
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: colorScheme.onPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -127,7 +130,7 @@ class ConfirmationScreen extends StatelessWidget {
                   child: Text(
                     "BACK TO HOME",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: colorScheme.primary,
                       decoration: TextDecoration.underline,
                       fontSize: 16,
                     ),

@@ -13,7 +13,7 @@ class CheckoutScreen extends StatelessWidget {
   final double totalAmount;
 
   const CheckoutScreen({
-    Key? key,
+    super.key,
     required this.oilType,
     required this.qtyOil,
     required this.companyName,
@@ -21,7 +21,7 @@ class CheckoutScreen extends StatelessWidget {
     required this.pickupDate,
     required this.subtotal,
     required this.totalAmount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CheckoutScreen extends StatelessWidget {
           children: [
             const Text(
               'Payment Details',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Card(
@@ -77,7 +77,7 @@ class CheckoutScreen extends StatelessWidget {
             const SizedBox(height: 24),
             const Text(
               'Order Summary',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Card(
@@ -91,13 +91,12 @@ class CheckoutScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildSummaryRow(
-                        'Subtotal', '${subtotal.toStringAsFixed(2)} SAR'),
+                    _buildSummaryRow('Subtotal', '${subtotal.toInt()} SAR'),
                     _buildSummaryRow('Service Fee', '50 SAR'),
                     const Divider(),
                     _buildSummaryRow(
                       'Total (Incl. VAT)',
-                      '${totalAmount.toStringAsFixed(2)} SAR',
+                      '${totalAmount.toInt()} SAR',
                       isBold: true,
                     ),
                   ],
@@ -129,11 +128,11 @@ class CheckoutScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('1 Item', style: TextStyle(fontSize: 16)),
+                const Text('1 Item', style: TextStyle(fontSize: 18)),
                 Text(
                   '${totalAmount.toStringAsFixed(2)} SAR',
                   style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -146,9 +145,25 @@ class CheckoutScreen extends StatelessWidget {
   Widget _buildDetailRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 16)),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 18),
+          ),
+        ),
+        const SizedBox(width: 8),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 150), // Set maximum width
+          child: Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            overflow:
+                TextOverflow.ellipsis, // Truncate overflow text with ellipsis
+            textAlign: TextAlign.right,
+          ),
+        ),
       ],
     );
   }
@@ -159,13 +174,19 @@ class CheckoutScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontSize: 18,
+            ),
+          ),
           Text(
             value,
             style: TextStyle(
               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
               color: isBold ? Colors.green : null,
-              fontSize: isBold ? 18 : 16,
+              fontSize: 18,
             ),
           ),
         ],
