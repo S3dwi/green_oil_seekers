@@ -16,10 +16,10 @@ class OrderDetailsScreen extends StatelessWidget {
   final String pickupDate;
   final String userEmail;
 
-  final String invoiceId = Uuid().v4().substring(0, 8).toUpperCase();
+  final String invoiceId = const Uuid().v4().substring(0, 8).toUpperCase();
 
   OrderDetailsScreen({
-    Key? key,
+    super.key,
     required this.orderId,
     required this.oilType,
     required this.qtyOil,
@@ -27,7 +27,7 @@ class OrderDetailsScreen extends StatelessWidget {
     required this.customerLocation,
     required this.pickupDate,
     required this.userEmail,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

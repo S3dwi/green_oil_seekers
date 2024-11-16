@@ -6,7 +6,9 @@ class TrackOrderScreen extends StatefulWidget {
   const TrackOrderScreen({super.key, required this.orderId});
 
   @override
-  _TrackOrderScreenState createState() => _TrackOrderScreenState();
+  State<StatefulWidget> createState() {
+    return _TrackOrderScreenState();
+  }
 }
 
 class _TrackOrderScreenState extends State<TrackOrderScreen> {
