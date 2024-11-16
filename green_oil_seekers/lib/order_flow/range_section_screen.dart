@@ -7,6 +7,7 @@ class RangeSection extends StatefulWidget {
   final double min;
   final double max;
   final Function(double, double)? onRangeSelected;
+  final TextStyle? titleStyle; // Custom title style
 
   const RangeSection({
     super.key,
@@ -15,12 +16,11 @@ class RangeSection extends StatefulWidget {
     required this.min,
     required this.max,
     this.onRangeSelected,
+    this.titleStyle,
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return _RangeSectionState();
-  }
+  State<StatefulWidget> createState() => _RangeSectionState();
 }
 
 class _RangeSectionState extends State<RangeSection> {
@@ -30,8 +30,8 @@ class _RangeSectionState extends State<RangeSection> {
   @override
   void initState() {
     super.initState();
-    minController = TextEditingController();
-    maxController = TextEditingController();
+    minController = TextEditingController(text: widget.min.toString());
+    maxController = TextEditingController(text: widget.max.toString());
   }
 
   @override
@@ -44,6 +44,7 @@ class _RangeSectionState extends State<RangeSection> {
   void _onRangeChanged() {
     final minVal = double.tryParse(minController.text) ?? widget.min;
     final maxVal = double.tryParse(maxController.text) ?? widget.max;
+
     if (minVal <= maxVal) {
       widget.onRangeSelected?.call(minVal, maxVal);
     }
@@ -51,80 +52,84 @@ class _RangeSectionState extends State<RangeSection> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+          style: widget.titleStyle ??
+              TextStyle(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.secondary,
+                fontSize: 16,
+              ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Row(
           children: [
-            Expanded(
-              child: TextField(
-                controller: minController,
-                decoration: InputDecoration(
-                  hintText: 'Min ${widget.unit}',
-                  suffixText: widget.unit,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  hintStyle: TextStyle(
-                    color: Theme.of(context).disabledColor,
-                  ),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                ],
-                onChanged: (value) => _onRangeChanged(),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
+            _buildTextField(
+              controller: minController,
+              hintText: 'Min ${widget.unit}',
+              onChanged: (value) => _onRangeChanged(),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 10),
             Text(
               'to',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
+                color: colorScheme.secondary,
+                fontSize: 20,
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: TextField(
-                controller: maxController,
-                decoration: InputDecoration(
-                  hintText: 'Max ${widget.unit}',
-                  suffixText: widget.unit,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  hintStyle: TextStyle(
-                    color: Theme.of(context).disabledColor,
-                  ),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                ],
-                onChanged: (value) => _onRangeChanged(),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
+            const SizedBox(width: 10),
+            _buildTextField(
+              controller: maxController,
+              hintText: 'Max ${widget.unit}',
+              onChanged: (value) => _onRangeChanged(),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required Function(String) onChanged,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Expanded(
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hintText,
+          suffixText: widget.unit,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          hintStyle: TextStyle(
+            color: Theme.of(context).disabledColor,
+          ),
+        ),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+        ],
+        onChanged: onChanged,
+        style: TextStyle(
+          color: colorScheme.secondary,
+        ),
+        onTap: () {
+          // Select all text when the field is focused
+          controller.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.text.length,
+          );
+        },
+      ),
     );
   }
 }

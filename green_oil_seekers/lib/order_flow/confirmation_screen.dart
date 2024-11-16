@@ -3,16 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 
-import 'order_track_screen.dart';
+import 'order_details_screen.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final String oilType;
   final double qtyOil;
   final String cityName;
   final String companyName;
-  final String arrivalDate;
-  final String arrivalTime;
   final String orderId;
+  final String customerLocation;
+  final String pickupDate;
 
   ConfirmationScreen({
     super.key,
@@ -20,8 +20,9 @@ class ConfirmationScreen extends StatelessWidget {
     required this.qtyOil,
     required this.cityName,
     required this.companyName,
-    required this.arrivalDate,
-    required this.arrivalTime,
+    required this.customerLocation,
+    required this.pickupDate,
+    required double totalAmount,
   }) : orderId = _generateOrderId();
 
   static String _generateOrderId() {
@@ -33,8 +34,10 @@ class ConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: colorScheme.onPrimary,
       body: Stack(
         children: [
           Positioned.fill(
@@ -57,7 +60,7 @@ class ConfirmationScreen extends StatelessWidget {
                   "Order has been placed successfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: colorScheme.primary,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -67,7 +70,7 @@ class ConfirmationScreen extends StatelessWidget {
                   "Your support helps the environment\nthrough recycling!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: colorScheme.secondary,
                     fontSize: 16,
                   ),
                 ),
@@ -79,20 +82,21 @@ class ConfirmationScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => OrderTrackScreen(
+                          builder: (context) => OrderDetailsScreen(
                             orderId: orderId,
                             oilType: oilType,
-                            qtyOil: qtyOil,
-                            cityName: cityName,
+                            qtyOil: qtyOil.toInt(),
                             companyName: companyName,
-                            arrivalDate: arrivalDate,
-                            arrivalTime: arrivalTime,
+                            customerLocation: customerLocation,
+                            pickupDate: pickupDate,
+                            userEmail:
+                                '', // Pass user email dynamically if needed
                           ),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -104,7 +108,7 @@ class ConfirmationScreen extends StatelessWidget {
                     child: Text(
                       "VIEW ORDER",
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: colorScheme.onPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -126,7 +130,7 @@ class ConfirmationScreen extends StatelessWidget {
                   child: Text(
                     "BACK TO HOME",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: colorScheme.primary,
                       decoration: TextDecoration.underline,
                       fontSize: 16,
                     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../primary_button.dart';
+import './dropdown.dart';
 import 'choose_offer_screen.dart';
-import 'payment_screen.dart';
 
 class ChooseCityScreen extends StatefulWidget {
   const ChooseCityScreen({super.key});
@@ -17,7 +17,6 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
   String? selectedCity;
   String? selectedCompany;
   String selectedOffer = '';
-  Map<String, dynamic>? selectedOfferDetails;
 
   final List<String> cities = [
     'Jeddah',
@@ -25,26 +24,44 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
     'Al Madinah',
     'Khobar',
     'Makkah',
-    'Dammam'
+    'Dammam',
   ];
-  final List<String> companies = ['Moblpetroleum', 'Green Oil'];
+
+  final List<String> companies = [
+    'Moblpetroleum',
+    'Green Oil',
+  ];
+
+  void _onChooseOffer() async {
+    final selectedOfferDetails = await showOfferSheet(context);
+    if (selectedOfferDetails != null) {
+      setState(() {
+        selectedOffer = 'Offer Selected';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: colorScheme.onPrimary,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Complete Order',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: colorScheme.secondary,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back_ios, color: colorScheme.secondary),
           onPressed: () => Navigator.pop(context),
-          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: Padding(
@@ -52,183 +69,84 @@ class _ChooseCityScreenState extends State<ChooseCityScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            buildDropdownButton('Choose City', selectedCity, cities, (value) {
-              setState(() {
-                selectedCity = value;
-              });
-            }),
-            const SizedBox(height: 16),
-            buildDropdownButton(
-              'Choose Factory/Company',
-              selectedCompany,
-              companies,
-              (value) {
+            DropdownWidget(
+              selectedValue: selectedCity,
+              hint: 'Choose City',
+              items: cities,
+              onChanged: (value) {
+                setState(() {
+                  selectedCity = value;
+                });
+              },
+              isCityDropdown: true,
+            ),
+            const SizedBox(height: 20),
+            DropdownWidget(
+              selectedValue: selectedCompany,
+              hint: 'Choose Factory/Company',
+              items: companies,
+              onChanged: (value) {
                 setState(() {
                   selectedCompany = value;
                 });
               },
+              isCityDropdown: false,
             ),
-            const SizedBox(height: 16),
-            GestureDetector(
-              onTap: () async {
-                final offer = await showOfferSheet(context);
-                if (offer != null) {
-                  setState(() {
-                    selectedOfferDetails = offer as Map<String, dynamic>?;
-                    selectedOffer = offer['oilType'];
-                  });
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      selectedOffer.isEmpty
-                          ? 'Choose Offer'
-                          : 'Selected Offer: $selectedOffer',
-                      style: TextStyle(
-                        color: selectedOffer.isEmpty
-                            ? Theme.of(context).disabledColor
-                            : Theme.of(context).colorScheme.secondary,
-                        fontSize: 18,
-                      ),
-                    ),
-                    Icon(Icons.tune, color: Theme.of(context).disabledColor),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (selectedOfferDetails != null) ...[
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      selectedOfferDetails!['oilType'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    const SizedBox(height: 8),
-                    Text('Quantity: ${selectedOfferDetails!['quantity']} L'),
-                    Text(
-                        'Price per liter: ${selectedOfferDetails!['price']} SAR'),
-                    Text('Distance: ${selectedOfferDetails!['distance']} KM'),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        'Total: ${(selectedOfferDetails!['quantity'] * selectedOfferDetails!['price']).toStringAsFixed(2)} SAR',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            const SizedBox(height: 40),
+            _buildOfferSelection(),
             const Spacer(),
             PrimaryButton(
+              onPressed: (selectedCity != null &&
+                      selectedCompany != null &&
+                      selectedOffer.isNotEmpty)
+                  ? _onNextPressed
+                  : () {},
+              backgroundColor: (selectedCity != null &&
+                      selectedCompany != null &&
+                      selectedOffer.isNotEmpty)
+                  ? colorScheme.primary
+                  : Theme.of(context).disabledColor,
               label: 'NEXT',
-              onPressed: () {
-                if (selectedOfferDetails != null &&
-                    selectedCity != null &&
-                    selectedCompany != null) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PaymentScreen(
-                        oilPrice: selectedOfferDetails!['price'].toDouble(),
-                        cityName: selectedCity!,
-                        companyName: selectedCompany!,
-                        oilType: selectedOfferDetails!['oilType'],
-                        qtyOil: selectedOfferDetails!['quantity'].toDouble(),
-                      ),
-                    ),
-                  );
-                }
-              },
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              textColor: Theme.of(context).colorScheme.onPrimary,
-              verticalPadding: 16,
-              horizontalPadding: 145,
-              fontSize: 24,
-              isEnabled: selectedOfferDetails != null &&
-                  selectedCity != null &&
-                  selectedCompany != null,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget buildDropdownButton(String hint, String? value, List<String> items,
-      ValueChanged<String?> onChanged) {
+  Widget _buildOfferSelection() {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(8),
+        color: colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.24),
             spreadRadius: 2,
             blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-      child: DropdownButton<String>(
-        value: value,
-        isExpanded: true,
-        hint: Text(hint,
-            style: TextStyle(color: Theme.of(context).disabledColor)),
-        underline: const SizedBox(),
-        icon:
-            Icon(Icons.arrow_drop_down, color: Theme.of(context).disabledColor),
-        dropdownColor: Theme.of(context).colorScheme.onPrimary,
-        onChanged: onChanged,
-        items: items.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-          );
-        }).toList(),
+      child: ListTile(
+        title: Text(
+          selectedOffer.isEmpty ? 'Choose Offer' : selectedOffer,
+          style: TextStyle(
+            color: selectedOffer.isEmpty
+                ? colorScheme.secondary.withOpacity(0.6)
+                : colorScheme.primary,
+          ),
+        ),
+        trailing: Icon(Icons.tune, color: colorScheme.secondary),
+        onTap: _onChooseOffer,
       ),
     );
+  }
+
+  void _onNextPressed() {
+    // Implement navigation to the next screen
   }
 }

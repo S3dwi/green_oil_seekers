@@ -1,25 +1,25 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class OilTypeSelection extends StatefulWidget {
-  final List<String> oilTypes;
-  final Function(List<String>) onSelected;
+  final ValueChanged<List<String>> onSelected;
 
-  const OilTypeSelection({
-    super.key,
-    required this.onSelected,
-    this.oilTypes = const ['Cooking Oil', 'Motor Oil', 'Lubricating Oil'],
-  });
+  const OilTypeSelection({super.key, required this.onSelected});
 
   @override
-  State<StatefulWidget> createState() {
-    return _OilTypeSelectionState();
-  }
+  _OilTypeSelectionState createState() => _OilTypeSelectionState();
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {
+  final List<String> oilTypes = [
+    'Cooking Oil',
+    'Motor Oil',
+    'Lubricating Oil',
+  ];
   List<String> selectedOilTypes = [];
 
-  void toggleSelection(String oilType) {
+  void _onOilTypeToggle(String oilType) {
     setState(() {
       if (selectedOilTypes.contains(oilType)) {
         selectedOilTypes.remove(oilType);
@@ -32,38 +32,41 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: widget.oilTypes.map((oilType) {
-        return buildOilTypeButton(
-          oilType,
-          selectedOilTypes.contains(oilType),
-          () => toggleSelection(oilType),
-        );
-      }).toList(),
+    return Wrap(
+      spacing: 8.0,
+      children:
+          oilTypes.map((oilType) => _buildOilTypeButton(oilType)).toList(),
     );
   }
 
-  Widget buildOilTypeButton(
-      String text, bool isSelected, VoidCallback onPressed) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
+  Widget _buildOilTypeButton(String oilType) {
+    final isSelected = selectedOilTypes.contains(oilType);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor:
+            isSelected ? colorScheme.primary : colorScheme.secondary,
         backgroundColor: isSelected
-            ? Theme.of(context).colorScheme.onPrimary.withOpacity(0.1)
-            : Colors.transparent,
+            ? colorScheme.onPrimary.withOpacity(0.2)
+            : colorScheme.onPrimary,
         side: BorderSide(
           color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).disabledColor,
+              ? colorScheme.primary
+              : Theme.of(context)
+                  .disabledColor, // Unselected: gray, Selected: primary
+          width: 1,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
+      onPressed: () => _onOilTypeToggle(oilType),
       child: Text(
-        text,
+        oilType,
         style: TextStyle(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.secondary,
+          color: isSelected ? colorScheme.primary : colorScheme.secondary,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

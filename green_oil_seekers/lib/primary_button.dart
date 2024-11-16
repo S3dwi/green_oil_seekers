@@ -54,9 +54,9 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
-    this.verticalPadding = 16.0,
-    this.horizontalPadding = 145.0,
-    this.fontSize = 24.0,
+    this.verticalPadding = 20.0,
+    this.horizontalPadding = 30.0,
+    this.fontSize = 20.0,
     this.isEnabled = true,
   });
 

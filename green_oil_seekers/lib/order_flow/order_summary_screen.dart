@@ -1,46 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/primary_button.dart';
-import 'package:intl/intl.dart';
 
-import 'confirmation_screen.dart';
+import '../primary_button.dart';
+import 'payment_screen.dart';
 
-class OrderSummary extends StatelessWidget {
-  final double totalPayment;
-  final String cityName;
+class OrderSummaryScreen extends StatelessWidget {
   final String companyName;
   final String oilType;
-  final double qtyOil;
-  final DateTime arrivalDate;
+  final int qtyOil;
+  final double oilPrice;
+  final String customerLocation;
+  final String pickupDate;
 
-  const OrderSummary({
+  const OrderSummaryScreen({
     super.key,
-    required this.totalPayment,
-    required this.cityName,
     required this.companyName,
     required this.oilType,
     required this.qtyOil,
-    required this.arrivalDate,
+    required this.oilPrice,
+    required this.customerLocation,
+    required this.pickupDate,
   });
-
-  // Format date consistently
-  String get formattedArrivalDate =>
-      DateFormat('yyyy-MM-dd').format(arrivalDate);
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Order Summary',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () => Navigator.pop(context),
-          color: Colors.black,
         ),
       ),
       body: Padding(
@@ -48,77 +44,93 @@ class OrderSummary extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 16),
-            _buildSummaryRow(
-              'Total Payment',
-              '${totalPayment.toStringAsFixed(1)} SAR',
-              isBold: true,
-              color: Theme.of(context).colorScheme.primary,
+            Card(
+              color: colorScheme.onPrimary,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSummaryRow(context, 'Company Name', companyName),
+                    _buildDivider(),
+                    _buildSummaryRow(context, 'Oil Type', oilType),
+                    _buildDivider(),
+                    _buildSummaryRow(
+                        context, 'Estimated Quantity', '$qtyOil L'),
+                    _buildDivider(),
+                    _buildSummaryRow(
+                        context, 'Customer Location', customerLocation,
+                        isTruncated: true),
+                    _buildDivider(),
+                    _buildSummaryRow(context, 'Pickup Date', pickupDate),
+                    _buildDivider(),
+                    _buildSummaryRow(context, 'Offer Price',
+                        '${(oilPrice * qtyOil).toStringAsFixed(0)} SAR'),
+                  ],
+                ),
+              ),
             ),
-            const Divider(),
-            _buildSummaryRow('City Name', cityName),
-            const Divider(),
-            _buildSummaryRow('Company Name', companyName),
-            const Divider(),
-            _buildSummaryRow('Arrival Date', formattedArrivalDate),
             const Spacer(),
             PrimaryButton(
-              label: 'PAY',
-              onPressed: () => _navigateToConfirmation(context),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              textColor: Theme.of(context).colorScheme.onPrimary,
-              verticalPadding: 16,
-              horizontalPadding: 100,
-              fontSize: 24,
-              isEnabled: true,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentScreen(
+                      oilType: oilType,
+                      qtyOil: qtyOil,
+                      companyName: companyName,
+                      customerLocation: customerLocation,
+                      pickupDate: pickupDate,
+                      oilPrice: oilPrice,
+                    ),
+                  ),
+                );
+              },
+              label: 'NEXT',
             ),
-            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  void _navigateToConfirmation(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConfirmationScreen(
-          oilType: oilType,
-          qtyOil: qtyOil,
-          cityName: cityName,
-          companyName: companyName,
-          arrivalDate: formattedArrivalDate,
-          arrivalTime: '8:00am - 2:00pm',
+  Widget _buildSummaryRow(BuildContext context, String label, String value,
+      {bool isTruncated = false}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 4, // Adjust the width ratio of the label
+          child: Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
         ),
-      ),
+        Expanded(
+          flex: 2, // Adjust the width ratio of the value
+          child: Text(
+            value,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            overflow:
+                isTruncated ? TextOverflow.ellipsis : TextOverflow.visible,
+            maxLines: 1,
+            textAlign: TextAlign.start,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildSummaryRow(String label, String value,
-      {bool isBold = false, Color color = Colors.black}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: color,
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Divider _buildDivider() => Divider(color: Colors.grey.shade400);
 }
