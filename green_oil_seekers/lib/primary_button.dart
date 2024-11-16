@@ -49,7 +49,7 @@ import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.backgroundColor,
@@ -58,7 +58,7 @@ class PrimaryButton extends StatelessWidget {
     this.horizontalPadding = 145.0,
     this.fontSize = 24.0,
     this.isEnabled = true,
-  }) : super(key: key);
+  });
 
   final String label;
   final void Function() onPressed;
@@ -68,9 +68,8 @@ class PrimaryButton extends StatelessWidget {
   final double horizontalPadding;
   final double fontSize;
   final bool isEnabled;
-  
-  // Rest of the code remains the same
 
+  // Rest of the code remains the same
 
   @override
   Widget build(BuildContext context) {
@@ -107,5 +106,4 @@ class PrimaryButton extends StatelessWidget {
       ),
     );
   }
-  
 }
