@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/primary_button.dart';
+import 'package:green_oil_seekers/auth_button.dart';
+
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
 import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
 import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 import 'package:green_oil_seekers/sign_up_screen/name_text_field.dart';
 import 'package:green_oil_seekers/sign_up_screen/phone_text_field.dart';
+import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -25,67 +29,56 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _enteredPassword = '';
   bool _isLoading = false;
 
-  // // Function to handle account creation
-  // void _createAccount() async {
-  //   if (_form.currentState!.validate()) {
-  //     _form.currentState!.save();
-
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     try {
-  //       final userCredential =
-  //           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //         email: _enteredEmail,
-  //         password: _enteredPassword,
-  //       );
-
-  //       await userCredential.user!.sendEmailVerification();
-
-  //       await FirebaseFirestore.instance
-  //           .collection('provider')
-  //           .doc(userCredential.user!.uid)
-  //           .set({
-  //         'Name': _enteredName,
-  //         'Phone': _enteredPhone,
-  //         'Email': _enteredEmail,
-  //       });
-
-  //       if (mounted) {
-  //         Navigator.of(context).push(
-  //           MaterialPageRoute(
-  //             builder: (context) => VerifyEmailScreen(),
-  //           ),
-  //         );
-  //       }
-  //     } on FirebaseAuthException catch (error) {
-  //       if (mounted) {
-  //         ScaffoldMessenger.of(context).clearSnackBars();
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content: Text(error.message ?? 'Authentication failed.'),
-  //           ),
-  //         );
-  //       }
-  //     } finally {
-  //       if (mounted) {
-  //         setState(() {
-  //           _isLoading = false; // Stop loading
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
   // Function to handle account creation
-  void _createAccount() {
+  void _createAccount() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const SignInScreen(),
-        ),
-      );
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        final userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+
+        await userCredential.user!.sendEmailVerification();
+
+        await FirebaseFirestore.instance
+            .collection('seeker ')
+            .doc(userCredential.user!.uid)
+            .set({
+          'Name': _enteredName,
+          'Phone': _enteredPhone,
+          'Email': _enteredEmail,
+        });
+
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const VerifyEmailScreen(),
+            ),
+          );
+        }
+      } on FirebaseAuthException catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.message ?? 'Authentication failed.'),
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Stop loading
+          });
+        }
+      }
     }
   }
 
@@ -173,34 +166,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             const Spacer(), // Fills remaining space to push button to the bottom
 
-            PrimaryButton(
-              onPressed: _createAccount,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              label: 'Sign Up',
-            ),
-
             // Sign-Up button
-            // SigninSignup(
-            //   onPressed: _isLoading ? () {} : _createAccount,
-            //   vertical: _isLoading ? 15 : 13,
-            //   horizontal: _isLoading ? 165 : 141.8,
-            //   child: _isLoading
-            //       ? SizedBox(
-            //           height: 30,
-            //           width: 30,
-            //           child: CircularProgressIndicator(
-            //             color: Theme.of(context).colorScheme.onPrimary,
-            //           ),
-            //         )
-            //       : Text(
-            //           'Sign up',
-            //           style: TextStyle(
-            //             fontSize: 24,
-            //             fontWeight: FontWeight.bold,
-            //             color: Theme.of(context).colorScheme.onSecondary,
-            //           ),
-            //         ),
-            // ),
+            AuthButton(
+              onPressed: _isLoading ? () {} : _createAccount,
+              vertical: _isLoading ? 15 : 13,
+              horizontal: _isLoading ? 165 : 141.8,
+              child: _isLoading
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      'Sign up',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+            ),
 
             const SizedBox(height: 20),
 

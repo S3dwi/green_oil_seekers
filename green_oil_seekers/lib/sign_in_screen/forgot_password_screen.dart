@@ -1,30 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:green_oil_seekers/auth_button.dart';
-
-import 'package:green_oil_seekers/nav_bar.dart';
+import 'package:green_oil_seekers/send_email_screen.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
-import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
-import 'package:green_oil_seekers/sign_up_screen/sign_up_screen.dart';
-import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
+import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<StatefulWidget> createState() {
+    return _ForgotPasswordState();
+  }
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _ForgotPasswordState extends State<ForgotPasswordScreen> {
   // Global key to track and validate the form
   final _form = GlobalKey<FormState>();
 
   var _enteredEmail = '';
-  var _enteredPassword = '';
   bool _isLoading = false;
 
-  // Function to handle SignIn
-  void _signIn() async {
+  void _resetPassword() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
 
@@ -33,38 +31,34 @@ class _SignInScreenState extends State<SignInScreen> {
       });
 
       try {
-        final userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _enteredEmail,
-          password: _enteredPassword,
+        await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: _enteredEmail.trim(),
         );
-
-        // Force reload to update verification status
-        await userCredential.user?.reload();
-        final user = FirebaseAuth.instance.currentUser;
-
-        if (user != null && user.emailVerified) {
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const NavBar(wantedPage: 0),
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => SendEmailScreen(
+                text: 'BACK TO SIGN IN',
+                onPressed: () {
+                  //Navigate to Sign In screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignInScreen(),
+                    ),
+                  );
+                },
               ),
-            );
-          }
-        } else {
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const VerifyEmailScreen(),
-              ),
-            );
-          }
+            ),
+          );
         }
       } on FirebaseAuthException catch (error) {
         if (mounted) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.message ?? 'Authentication failed.')),
+            SnackBar(
+              content: Text(error.message ?? 'Authentication failed.'),
+            ),
           );
         }
       } finally {
@@ -98,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
             // Title text
             Text(
-              "Sign in",
+              "Forgot Password",
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
@@ -106,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
 
-            const SizedBox(height: 3),
+            const SizedBox(height: 5),
 
             // Subtitle or welcoming text
             Text(
@@ -117,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 60),
 
             // Sign-In form with input fields
             Form(
@@ -131,37 +125,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       _enteredEmail = newValue!;
                     },
                   ),
-                  const SizedBox(height: 15),
-
-                  // Password input field
-                  PasswordSigin(
-                    onSaved: (newValue) {
-                      _enteredPassword = newValue!;
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            // "Forgot Password" option
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      // Add forgot password logic here
-                    },
-                    child: Text(
-                      "Forgot Password?",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -170,9 +133,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
             // Sign-in button
             AuthButton(
-              onPressed: _isLoading ? () {} : _signIn,
+              onPressed: _isLoading ? () {} : _resetPassword,
               vertical: _isLoading ? 15 : 13,
-              horizontal: _isLoading ? 165 : 145,
+              horizontal: _isLoading ? 165 : 96.25,
               child: _isLoading
                   ? SizedBox(
                       height: 30,
@@ -182,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     )
                   : Text(
-                      'Sign in',
+                      'Resat Password',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -198,7 +161,7 @@ class _SignInScreenState extends State<SignInScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Don’t Have an account?",
+                  "Back to",
                   style: TextStyle(
                     fontSize: 17,
                     color: Theme.of(context).colorScheme.secondary,
@@ -207,15 +170,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    // Navigate to the Sign-Up screen
+                    // Navigate back to Sign-in screen
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SignUpScreen(),
+                        builder: (context) => const SignInScreen(),
                       ),
                     );
                   },
                   child: Text(
-                    "Sign up",
+                    "Sign in",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontSize: 17,
