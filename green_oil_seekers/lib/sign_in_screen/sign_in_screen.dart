@@ -4,6 +4,7 @@ import 'package:green_oil_seekers/auth_button.dart';
 
 import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
+import 'package:green_oil_seekers/sign_in_screen/forgot_password_screen.dart';
 import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
 import 'package:green_oil_seekers/sign_up_screen/sign_up_screen.dart';
 import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
@@ -153,6 +154,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   InkWell(
                     onTap: () {
                       // Add forgot password logic here
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
+                      );
                     },
                     child: Text(
                       "Forgot Password?",
