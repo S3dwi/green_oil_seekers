@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
@@ -34,15 +36,17 @@ class VerifyEmailScreen extends StatelessWidget {
             PrimaryButton(
               onPressed: () {
                 // Send verification email here
-                // FirebaseAuth.instance.currentUser?.sendEmailVerification();
-                // Navigator.of(context).pushReplacement(
-                //   MaterialPageRoute(
-                //     builder: (context) => SignInScreen(),
-                //   ),
-                // );
+                FirebaseAuth.instance.currentUser?.sendEmailVerification();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const SignInScreen(),
+                  ),
+                );
               },
               backgroundColor: Theme.of(context).colorScheme.primary,
               label: 'Resend Email',
+              horizontalPadding: 25,
+              verticalPadding: 13,
             ),
             const SizedBox(height: 40),
             TextButton(

@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (firebaseUser != null) {
       try {
         DocumentSnapshot snapshot = await FirebaseFirestore.instance
-            .collection('provider')
+            .collection('seeker')
             .doc(firebaseUser.uid)
             .get();
 

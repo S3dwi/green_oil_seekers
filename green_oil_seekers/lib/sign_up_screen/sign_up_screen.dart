@@ -48,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await userCredential.user!.sendEmailVerification();
 
         await FirebaseFirestore.instance
-            .collection('seeker ')
+            .collection('seeker')
             .doc(userCredential.user!.uid)
             .set({
           'Name': _enteredName,

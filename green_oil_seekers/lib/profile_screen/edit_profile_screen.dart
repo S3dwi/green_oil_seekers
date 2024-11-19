@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         // If there's anything to update, proceed
         if (updateData.isNotEmpty) {
           await FirebaseFirestore.instance
-              .collection('provider')
+              .collection('seeker')
               .doc(firebaseUser.uid)
               .update(updateData);
           if (mounted) {
