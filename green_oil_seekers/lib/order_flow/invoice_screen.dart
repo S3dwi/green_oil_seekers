@@ -211,7 +211,7 @@ class InvoiceScreen extends StatelessWidget {
         filename: 'invoice_$invoiceId.pdf',
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).clearSnackBars();
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to generate PDF: $e')),
       );

@@ -12,7 +12,7 @@ class TrackOrderScreen extends StatefulWidget {
 }
 
 class _TrackOrderScreenState extends State<TrackOrderScreen> {
-  int _currentStep = 0;
+  int _currentStep = 1; // Default to "Order Placed" checked.
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +57,90 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: Stepper(
-                currentStep: _currentStep,
-                onStepTapped: (step) {
-                  setState(() {
-                    _currentStep = step;
-                  });
+              child: ListView.builder(
+                itemCount: _steps.length,
+                itemBuilder: (context, index) {
+                  final isCompleted = _currentStep > index;
+                  final isActive = _currentStep == index + 1;
+
+                  return GestureDetector(
+                    onTap: () => _onStepTapped(index + 1),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 4.0),
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: isCompleted
+                                    ? colorScheme.primary // Green for completed
+                                    : Colors
+                                        .transparent, // Transparent for incomplete
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isCompleted
+                                      ? colorScheme
+                                          .primary // Green for completed
+                                      : Colors.grey, // Gray for incomplete
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: isCompleted
+                                  ? const Icon(
+                                      Icons.check,
+                                      size: 16,
+                                      color: Colors.white, // White checkmark
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                            if (index < _steps.length - 1)
+                              SizedBox(
+                                height:
+                                    60, // Fixed height for consistent spacing
+                                child: Container(
+                                  width: 2,
+                                  color: isCompleted
+                                      ? colorScheme.primary // Green line
+                                      : Colors.grey, // Gray for incomplete
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _steps[index]['title']!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: isCompleted || isActive
+                                      ? colorScheme.primary
+                                      : colorScheme.secondary,
+                                ),
+                              ),
+                              Text(
+                                _steps[index]['content']!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: isCompleted || isActive
+                                      ? colorScheme.primary
+                                      : Theme.of(context).disabledColor,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
-                controlsBuilder: (context, _) => const SizedBox.shrink(),
-                steps: _buildSteps(colorScheme),
               ),
             ),
             const SizedBox(height: 24),
@@ -92,58 +167,94 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     );
   }
 
-  List<Step> _buildSteps(ColorScheme colorScheme) {
-    final steps = [
-      {
-        'title': 'Order Placed',
-        'content':
-            'Your order is being processed, once accepted you can move further.',
-      },
-      {
-        'title': 'Order Accepted',
-        'content': 'Your order has been accepted by a provider.',
-      },
-      {
-        'title': 'Pickup Scheduled',
-        'content': 'Your order is scheduled for pickup on the selected date.',
-      },
-      {
-        'title': 'Pickup Confirmed',
-        'content': 'Your pickup is scheduled for the chosen date.',
-      },
-      {
-        'title': 'Order Completed',
-        'content': 'Your order is complete. The used oil has been picked up.',
-      },
-    ];
-
-    return steps.asMap().entries.map((entry) {
-      final index = entry.key;
-      final step = entry.value;
-
-      return Step(
-        title: Text(
-          step['title']!,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: _currentStep >= index
-                ? colorScheme.primary
-                : colorScheme.secondary,
-          ),
-        ),
-        content: Text(
-          step['content']!,
-          style: TextStyle(
-            fontSize: 16,
-            color: _currentStep >= index
-                ? colorScheme.primary
-                : Theme.of(context).disabledColor,
-          ),
-        ),
-        isActive: _currentStep >= index,
-        state: _currentStep > index ? StepState.complete : StepState.indexed,
-      );
-    }).toList();
+  void _onStepTapped(int step) {
+    if (step == _currentStep + 1) {
+      _showConfirmationDialog(step);
+    }
   }
+
+  void _showConfirmationDialog(int step) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final colorScheme = Theme.of(context).colorScheme;
+        return AlertDialog(
+          backgroundColor: colorScheme.onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            'Confirm Step',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to proceed to this step?\n',
+            style: TextStyle(
+              fontSize: 16,
+              color: colorScheme.secondary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog without changing.
+              },
+              child: Text(
+                'NOT SURE',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: colorScheme.secondary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _currentStep = step; // Move to the next step.
+                });
+                Navigator.pop(context); // Close the dialog.
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'CONFIRM',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  final List<Map<String, String>> _steps = [
+    {
+      'title': 'Order Placed',
+      'content': 'Your order is being processed.',
+    },
+    {
+      'title': 'Order Accepted',
+      'content': 'Your order has been accepted by the provider.',
+    },
+    {
+      'title': 'Pickup Scheduled',
+      'content': 'Your order is scheduled for pickup on the selected date.',
+    },
+    {
+      'title': 'Pickup Confirmed',
+      'content': 'Your pickup has been confirmed.',
+    },
+    {
+      'title': 'Order Completed',
+      'content': 'Your order is complete.',
+    },
+  ];
 }

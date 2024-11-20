@@ -200,4 +200,3 @@ class CheckoutScreen extends StatelessWidget {
     return location.length > 25 ? '${location.substring(0, 25)}...' : location;
   }
 }
-// daddy finger
