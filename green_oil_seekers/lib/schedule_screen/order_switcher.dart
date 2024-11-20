@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/models/order.dart';
 import 'package:green_oil_seekers/schedule_screen/orders_list/orders_list.dart';
 
-
 class OrderSwitcher extends StatefulWidget {
   const OrderSwitcher({super.key});
 

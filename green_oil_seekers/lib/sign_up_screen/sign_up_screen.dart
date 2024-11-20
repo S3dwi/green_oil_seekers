@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
-import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
+import 'package:green_oil_seekers/sign_in_screen/password_signin.dart';
 import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 import 'package:green_oil_seekers/sign_up_screen/name_text_field.dart';
 import 'package:green_oil_seekers/sign_up_screen/phone_text_field.dart';

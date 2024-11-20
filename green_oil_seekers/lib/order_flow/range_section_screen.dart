@@ -82,7 +82,10 @@ class _RangeSectionState extends State<RangeSection> {
                 fontSize: 20,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(
+              width: 10,
+              height: 50,
+            ),
             _buildTextField(
               controller: maxController,
               hintText: 'Max ${widget.unit}',

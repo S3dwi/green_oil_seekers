@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
-import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
+import 'package:green_oil_seekers/sign_in_screen/password_signin.dart';
 import 'package:green_oil_seekers/sign_up_screen/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
