@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_oil_seekers/auth_button.dart';
+
 import 'package:green_oil_seekers/nav_bar.dart';
-import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
-import 'package:green_oil_seekers/sign_in_screen/password_signin.dart';
+import 'package:green_oil_seekers/sign_in_screen/forgot_password_screen.dart';
+import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
 import 'package:green_oil_seekers/sign_up_screen/sign_up_screen.dart';
+import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -21,68 +25,56 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _isLoading = false;
 
   // Function to handle SignIn
-  // void _signIn() async {
-  //   if (_form.currentState!.validate()) {
-  //     _form.currentState!.save();
-
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     try {
-  //       final userCredential =
-  //           await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: _enteredEmail,
-  //         password: _enteredPassword,
-  //       );
-
-  //       // Force reload to update verification status
-  //       await userCredential.user?.reload();
-  //       final user = FirebaseAuth.instance.currentUser;
-
-  //       if (user != null && user.emailVerified) {
-  //         if (mounted) {
-  //           Navigator.of(context).pushReplacement(
-  //             MaterialPageRoute(
-  //               builder: (context) => const NavBar(wantedPage: 0),
-  //             ),
-  //           );
-  //         }
-  //       } else {
-  //         if (mounted) {
-  //           Navigator.of(context).pushReplacement(
-  //             MaterialPageRoute(
-  //               builder: (context) => const VerifyEmailScreen(),
-  //             ),
-  //           );
-  //         }
-  //       }
-  //     } on FirebaseAuthException catch (error) {
-  //       if (mounted) {
-  //         ScaffoldMessenger.of(context).clearSnackBars();
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text(error.message ?? 'Authentication failed.')),
-  //         );
-  //       }
-  //     } finally {
-  //       if (mounted) {
-  //         setState(() {
-  //           _isLoading = false; // Stop loading
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
   void _signIn() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(
-            wantedPage: 0,
-          ),
-        ),
-      );
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        final userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+
+        // Force reload to update verification status
+        await userCredential.user?.reload();
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user != null && user.emailVerified) {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const NavBar(wantedPage: 0),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const VerifyEmailScreen(),
+              ),
+            );
+          }
+        }
+      } on FirebaseAuthException catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message ?? 'Authentication failed.')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Stop loading
+          });
+        }
+      }
     }
   }
 
@@ -162,6 +154,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   InkWell(
                     onTap: () {
                       // Add forgot password logic here
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
+                      );
                     },
                     child: Text(
                       "Forgot Password?",
@@ -177,34 +174,28 @@ class _SignInScreenState extends State<SignInScreen> {
 
             const Spacer(),
 
-            PrimaryButton(
-              onPressed: _signIn,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              label: 'Sign in',
-            ),
-
             // Sign-in button
-            // SigninSignup(
-            //   onPressed: _isLoading ? () {} : _signIn,
-            //   vertical: _isLoading ? 15 : 13,
-            //   horizontal: _isLoading ? 165 : 145,
-            //   child: _isLoading
-            //       ? SizedBox(
-            //           height: 30,
-            //           width: 30,
-            //           child: CircularProgressIndicator(
-            //             color: Theme.of(context).colorScheme.onPrimary,
-            //           ),
-            //         )
-            //       : Text(
-            //           'Sign in',
-            //           style: TextStyle(
-            //             fontSize: 24,
-            //             fontWeight: FontWeight.bold,
-            //             color: Theme.of(context).colorScheme.onSecondary,
-            //           ),
-            //         ),
-            // ),
+            AuthButton(
+              onPressed: _isLoading ? () {} : _signIn,
+              vertical: _isLoading ? 15 : 13,
+              horizontal: _isLoading ? 165 : 145.35,
+              child: _isLoading
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      'Sign in',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+            ),
 
             const SizedBox(height: 20),
 

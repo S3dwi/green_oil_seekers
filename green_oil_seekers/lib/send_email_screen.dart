@@ -1,11 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:green_oil_seekers/primary_button.dart';
-import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
+class SendEmailScreen extends StatelessWidget {
+  const SendEmailScreen({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
 
-class VerifyEmailScreen extends StatelessWidget {
-  const VerifyEmailScreen({super.key});
+  final String text;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class VerifyEmailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             Text(
-              'Please check your email for the verification link.',
+              'Please check your email for resat password link.',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -33,34 +36,10 @@ class VerifyEmailScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            PrimaryButton(
-              onPressed: () {
-                // Send verification email here
-                FirebaseAuth.instance.currentUser?.sendEmailVerification();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
-                  ),
-                );
-              },
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              label: 'Resend Email',
-              horizontalPadding: 25,
-              verticalPadding: 13,
-            ),
-            const SizedBox(height: 40),
             TextButton(
-              onPressed: () {
-                //Navigate to Sign In screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
-                  ),
-                );
-              },
+              onPressed: onPressed,
               child: Text(
-                "BACK TO SIGN IN",
+                text,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.surface,
                   fontSize: 22,

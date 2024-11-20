@@ -24,8 +24,6 @@ class OrderSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    const double serviceFee = 50.0;
-    final double totalPayment = oilPrice * qtyOil + serviceFee;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,44 +67,9 @@ class OrderSummaryScreen extends StatelessWidget {
                         isTruncated: true),
                     _buildDivider(),
                     _buildSummaryRow(context, 'Pickup Date', pickupDate),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Payment details title above the card
-            const Text(
-              'Payment Details',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            // Payment details card
-            Card(
-              color: colorScheme.onPrimary,
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSummaryRow(context, 'Oil Price',
+                    _buildDivider(),
+                    _buildSummaryRow(context, 'Offer Price',
                         '${(oilPrice * qtyOil).toStringAsFixed(0)} SAR'),
-                    _buildDivider(),
-                    _buildSummaryRow(context, 'Services', '50 SAR'),
-                    _buildDivider(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: _buildSummaryRow(
-                        context,
-                        'Total Payment',
-                        '${totalPayment.toStringAsFixed(0)} SAR',
-                        isBold: true,
-                        isGreen: true, // Updated for green color
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -137,12 +100,12 @@ class OrderSummaryScreen extends StatelessWidget {
   }
 
   Widget _buildSummaryRow(BuildContext context, String label, String value,
-      {bool isTruncated = false, bool isBold = false, bool isGreen = false}) {
+      {bool isTruncated = false}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 4,
+          flex: 4, // Adjust the width ratio of the label
           child: Text(
             label,
             style: Theme.of(context)
@@ -152,13 +115,13 @@ class OrderSummaryScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 2, // Adjust the width ratio of the value
           child: Text(
             value,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                fontSize: 16,
-                color: isGreen ? Theme.of(context).colorScheme.primary : null), // Green for Total Payment
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             overflow:
                 isTruncated ? TextOverflow.ellipsis : TextOverflow.visible,
             maxLines: 1,

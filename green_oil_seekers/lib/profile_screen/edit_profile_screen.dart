@@ -1,7 +1,11 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/primary_button.dart';
+
+import 'package:green_oil_seekers/auth_button.dart';
+import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/profile_screen/edit_account_card.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,10 +13,101 @@ class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<StatefulWidget> createState() {
+    return _EditProfileScreenState();
+  }
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  File? _pickedImageFile;
+  final _name = TextEditingController();
+  final _phoneNumber = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _name.dispose();
+    _phoneNumber.dispose();
+  }
+
+  void _updateProfile() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+
+    if (firebaseUser != null) {
+      Map<String, dynamic> updateData = {}; // Map to hold the updates
+
+      // Indicate loading
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+      }
+
+      try {
+        // Check if the image file was picked and upload it
+        if (_pickedImageFile != null) {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('user_images')
+              .child('${firebaseUser.uid}.jpg');
+
+          await storageRef.putFile(_pickedImageFile!);
+          final imageUrl = await storageRef.getDownloadURL();
+          updateData['image_url'] = imageUrl; // Add image URL to update data
+        }
+
+        // Add name and phone number to updateData if they are not empty
+        if (_name.text.isNotEmpty) {
+          updateData['Name'] = _name.text.trim();
+        }
+        if (_phoneNumber.text.isNotEmpty) {
+          updateData['Phone'] = _phoneNumber.text.trim();
+        }
+
+        // If there's anything to update, proceed
+        if (updateData.isNotEmpty) {
+          await FirebaseFirestore.instance
+              .collection('seeker')
+              .doc(firebaseUser.uid)
+              .update(updateData);
+          if (mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const NavBar(wantedPage: 2),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No changes to update'),
+              ),
+            );
+          }
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error updating profile: $error'),
+            ),
+          );
+        }
+      } finally {
+        // Always runs even if there is an error
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Stop loading
+          });
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,12 +117,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 400,
+            height: 420,
             child: Stack(
               children: [
                 Container(
                   width: double.infinity,
-                  height: 330,
+                  height: 340,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(30),
@@ -75,7 +170,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ? FileImage(_pickedImageFile!)
                               : const AssetImage(
                                   'assets/images/profile_picture.png',
-                                ),
+                                ) as ImageProvider,
                           child: Align(
                             alignment: Alignment.bottomRight,
                             child: CircleAvatar(
@@ -97,43 +192,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ],
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   bottom: 0,
                   right: 18,
                   left: 18,
                   child: EditAccountCard(
                     label: "Name",
                     value: "Enter Name",
+                    maxLength: 50,
+                    keyboardType: TextInputType.name,
+                    controller: _name,
                   ),
-                )
+                ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          const EditAccountCard(
+          const SizedBox(height: 20),
+          EditAccountCard(
             label: "Phone Number",
             value: "Enter Phone Number",
-          ),
-          const SizedBox(
-            height: 50,
+            maxLength: 10,
+            keyboardType: TextInputType.phone,
+            controller: _phoneNumber,
           ),
           const Spacer(),
-          PrimaryButton(
-            onPressed: () {},
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            label: "Save",
+          AuthButton(
+            onPressed: _isLoading ? () {} : _updateProfile,
+            vertical: _isLoading ? 15 : 13,
+            horizontal: _isLoading ? 165 : 155.25,
+            child: _isLoading
+                ? SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  )
+                : Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
           ),
-          const SizedBox(
-            height: 70,
-          ),
+          const SizedBox(height: 70),
         ],
       ),
     );
   }
-
-  File? _pickedImageFile;
 
   void _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -152,7 +260,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
-                  Navigator.of(context).pop(); // This will close the dialog
+                  Navigator.of(context).pop(); // Close the dialog
                 },
               ),
             ],

@@ -1,60 +1,68 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:green_oil_seekers/profile_screen/account_detail_card.dart';
 import 'package:green_oil_seekers/profile_screen/edit_profile_screen.dart';
 import 'package:green_oil_seekers/profile_screen/help_center.dart';
 import 'package:green_oil_seekers/profile_screen/log_out.dart';
+import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 import 'package:green_oil_seekers/support_screen/support_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<StatefulWidget> createState() {
+    return _ProfileScreenState();
+  }
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = "";
   String userEmail = "";
   String userPhone = "";
+  String userImageUrl = "";
 
   @override
   void initState() {
     super.initState();
-    // fetchUserInfo();
+    fetchUserInfo();
   }
 
-  // void fetchUserInfo() async {
-  //   final firebaseUser = FirebaseAuth.instance.currentUser;
+  void fetchUserInfo() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
 
-  //   if (firebaseUser != null) {
-  //     try {
-  //       DocumentSnapshot snapshot = await FirebaseFirestore.instance
-  //           .collection('provider')
-  //           .doc(firebaseUser.uid)
-  //           .get();
+    if (firebaseUser != null) {
+      try {
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance
+            .collection('seeker')
+            .doc(firebaseUser.uid)
+            .get();
 
-  //       if (snapshot.exists) {
-  //         Map<String, dynamic> userData =
-  //             snapshot.data() as Map<String, dynamic>;
-  //         // Safely access the email, phone, and address fields
-  //         setState(() {
-  //           userName = userData['Name'] ?? "No Name provided";
-  //           userEmail = userData['Email'] ?? "No email provided";
-  //           userPhone = userData['Phone'] ?? "No phone number provided";
-  //         });
-  //       }
-  //     } catch (e) {
-  //       if (mounted) {
-  //         ScaffoldMessenger.of(context).clearSnackBars();
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content: Text('Error fetching user data: $e'),
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   }
-  // }
+        if (snapshot.exists) {
+          Map<String, dynamic> userData =
+              snapshot.data() as Map<String, dynamic>;
+          setState(() {
+            userName = userData['Name'] ?? "No Name provided";
+            userEmail = userData['Email'] ?? "No email provided";
+            userPhone = userData['Phone'] ?? "No phone number provided";
+            userImageUrl =
+                userData['image_url'] ?? 'assets/images/profile_picture.png';
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error fetching user data: $e'),
+            ),
+          );
+        }
+      }
+    }
+  }
 
   void helpCenter(BuildContext context) {
     Navigator.of(context).push(
@@ -64,18 +72,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // void _signOut() async {
-  //   await FirebaseAuth.instance.signOut();
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
 
-  //   if (!mounted) return;
-  //   // Navigate to the initial route without async gaps
-  //   if (Navigator.of(context).canPop()) {
-  //     Navigator.of(context).popUntil((route) => route.isFirst);
-  //   }
-  //   Navigator.of(context).pushReplacement(
-  //     MaterialPageRoute(builder: (context) => const SignInScreen()),
-  //   );
-  // }
+    if (!mounted) return;
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+    );
+  }
+
+  bool isValidUrl(String url) {
+    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,12 +120,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Stack(
                     alignment: AlignmentDirectional.topCenter,
                     children: [
-                      const Positioned(
+                      Positioned(
                         top: 65,
                         child: CircleAvatar(
                           radius: 64,
-                          backgroundImage:
-                              AssetImage('assets/images/profile_picture.png'),
+                          backgroundImage: isValidUrl(userImageUrl.trim())
+                              ? NetworkImage(userImageUrl)
+                              : const AssetImage(
+                                      'assets/images/profile_picture.png')
+                                  as ImageProvider,
                         ),
                       ),
                       Positioned(
@@ -185,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 6,
           ),
           LogOut(
-            onTap: () {},
+            onTap: _signOut,
           ),
         ],
       ),

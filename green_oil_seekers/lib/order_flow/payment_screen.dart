@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../primary_button.dart';
-import 'confirmation_screen.dart';
+import 'checkout_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String oilType;
@@ -33,12 +34,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final double totalPrice =
         widget.oilPrice * widget.qtyOil + 50; // 50 SAR service fee
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Checkout',
+          'Payment',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -54,26 +56,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Payment Method
-            const Text(
-              'Payment Method',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            _buildPaymentOption('Apple Pay', 'assets/images/applePay.png'),
-            const SizedBox(height: 8),
-            _buildPaymentOption('Cash', 'assets/images/cash2.png'),
-            const SizedBox(height: 8),
-            _buildPaymentOption('Visa', 'assets/images/visaPay.png'),
-            const SizedBox(height: 8),
-            _buildPaymentOption('Paypal', 'assets/images/paypal.png'),
-            const SizedBox(height: 24), // Large space as per Figma design
-            // Order Summary Card
-            const Text(
-              'Order Summary',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
             Card(
               color: colorScheme.onPrimary,
               elevation: 2,
@@ -83,20 +65,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSummaryRow('Subtotal', '${(widget.oilPrice * widget.qtyOil).toInt()} SAR'),
-                    _buildSummaryRow('Service Fee', '50 SAR'),
+                    _buildPriceRow(
+                      'Oil Price',
+                      '${widget.oilPrice.toInt() * widget.qtyOil} SAR',
+                      fontSize: 18,
+                    ),
+                    _buildPriceRow('Services', '50 SAR', fontSize: 18),
                     const Divider(),
-                    _buildSummaryRow(
-                      'Total (Incl. VAT)',
-                      '${totalPrice.toInt()} SAR',
-                      isBold: true,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: _buildPriceRow(
+                        'Total Payment',
+                        '${totalPrice.toInt()} SAR',
+                        isBold: true,
+                        fontSize: 20,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+            const Text(
+              'Payment Method',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            _buildPaymentOption('Paypal', 'assets/images/paypal.png'),
+            const SizedBox(height: 8),
+            _buildPaymentOption('Cash', 'assets/images/cash2.png'),
             const Spacer(),
             PrimaryButton(
               onPressed: selectedPaymentMethod != null
@@ -104,26 +103,56 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ConfirmationScreen(
+                          builder: (context) => CheckoutScreen(
                             oilType: widget.oilType,
-                            qtyOil: widget.qtyOil.toDouble(),
+                            qtyOil: widget.qtyOil,
                             companyName: widget.companyName,
                             customerLocation: widget.customerLocation,
                             pickupDate: widget.pickupDate,
+                            subtotal: widget.oilPrice * widget.qtyOil,
                             totalAmount: totalPrice,
-                            cityName: '',
                           ),
                         ),
                       );
                     }
-                  : (){},
-              label: 'PAY',
+                  : () {},
+              label: 'NEXT',
+              textColor: Theme.of(context).colorScheme.onSecondary,
               backgroundColor: selectedPaymentMethod != null
                   ? colorScheme.primary
                   : Theme.of(context).disabledColor,
+              verticalPadding: 16.0,
+              horizontalPadding: 140.0,
+              isEnabled: selectedPaymentMethod != null,
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPriceRow(String label, String amount,
+      {bool isBold = false, double fontSize = 16}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: fontSize,
+            ),
+          ),
+          Text(
+            amount,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontSize: fontSize,
+              color: isBold ? Theme.of(context).colorScheme.primary : null,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -165,31 +194,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String label, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: isBold ? Colors.green : null,
-              fontSize: 18,
-            ),
-          ),
-        ],
       ),
     );
   }

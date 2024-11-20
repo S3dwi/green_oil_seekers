@@ -4,9 +4,8 @@ import 'package:uuid/uuid.dart';
 
 import '../home_screen/home_screen.dart';
 import '../primary_button.dart';
-
-import '../order_flow/invoice_screen.dart';
-import '../order_flow/track_order_screen.dart';
+import 'invoice_screen.dart';
+import 'track_order_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final String orderId;

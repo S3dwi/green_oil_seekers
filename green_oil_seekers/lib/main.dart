@@ -1,10 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'package:green_oil_seekers/app_theme.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
+import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
+import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then(
@@ -23,8 +32,28 @@ class App extends StatelessWidget {
       theme: themeLight,
       darkTheme: themeDark,
       themeMode: ThemeMode.system,
-      home: const NavBar(
-        wantedPage: 0,
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final user = FirebaseAuth.instance.currentUser;
+
+            if (user != null) {
+              return FutureBuilder(
+                future: user.reload(),
+                builder: (context, futureSnapshot) {
+                  if (user.emailVerified) {
+                    return const NavBar(wantedPage: 0);
+                  } else {
+                    return const VerifyEmailScreen();
+                  }
+                },
+              );
+            }
+          }
+
+          return const SignInScreen();
+        },
       ),
     );
   }
