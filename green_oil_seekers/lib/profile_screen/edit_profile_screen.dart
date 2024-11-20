@@ -219,7 +219,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           AuthButton(
             onPressed: _isLoading ? () {} : _updateProfile,
             vertical: _isLoading ? 15 : 13,
-            horizontal: _isLoading ? 165 : 145,
+            horizontal: _isLoading ? 165 : 155.25,
             child: _isLoading
                 ? SizedBox(
                     height: 30,
