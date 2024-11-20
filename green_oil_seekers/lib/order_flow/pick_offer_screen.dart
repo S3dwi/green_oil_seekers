@@ -151,7 +151,7 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                                       children: [
                                         Text(
                                           offer['company'],
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),

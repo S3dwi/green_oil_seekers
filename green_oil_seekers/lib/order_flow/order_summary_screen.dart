@@ -24,7 +24,7 @@ class OrderSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final double serviceFee = 50.0;
+    const double serviceFee = 50.0;
     final double totalPayment = oilPrice * qtyOil + serviceFee;
 
     return Scaffold(

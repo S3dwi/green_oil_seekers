@@ -177,7 +177,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
             ),
           ),
