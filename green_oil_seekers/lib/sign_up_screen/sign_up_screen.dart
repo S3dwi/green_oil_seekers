@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:green_oil_seekers/auth_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/auth_button.dart';
 
-import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
-import 'package:green_oil_seekers/sign_in_screen/password_sigin.dart';
-import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
-import 'package:green_oil_seekers/sign_up_screen/name_text_field.dart';
-import 'package:green_oil_seekers/sign_up_screen/phone_text_field.dart';
 import 'package:green_oil_seekers/sign_up_screen/verify_email_screen.dart';
+import 'package:green_oil_seekers/sign_in_screen/email_text_field.dart';
+import 'package:green_oil_seekers/sign_up_screen/phone_text_field.dart';
+import 'package:green_oil_seekers/sign_up_screen/name_text_field.dart';
+import 'package:green_oil_seekers/sign_up_screen/password_signup.dart';
+import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -24,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _form = GlobalKey<FormState>();
 
   var _enteredName = '';
+  var _enteredNameCompany = '';
   var _enteredPhone = '';
   var _enteredEmail = '';
   var _enteredPassword = '';
@@ -51,9 +52,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             .collection('seeker')
             .doc(userCredential.user!.uid)
             .set({
-          'Name': _enteredName,
-          'Phone': _enteredPhone,
-          'Email': _enteredEmail,
+          'Name': _enteredName.trim(),
+          'Company Name': _enteredNameCompany.trim(),
+          'Phone': _enteredPhone.trim(),
+          'Email': _enteredEmail.trim(),
         });
 
         if (mounted) {
@@ -91,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 40), // Spacing at top
+            const SizedBox(height: 10), // Spacing at top
 
             // Logo image at top center
             Image.asset(
@@ -131,8 +133,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   // Name input field
                   NameTextField(
+                    label: 'Person Name (Required)',
                     onSaved: (newValue) {
                       _enteredName = newValue!;
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  NameTextField(
+                    label: 'Company Name (Required)',
+                    onSaved: (newValue) {
+                      _enteredNameCompany = newValue!;
                     },
                   ),
                   const SizedBox(height: 15),
@@ -155,7 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 15),
 
                   // Password input field with label
-                  PasswordSigin(
+                  PasswordSignup(
                     onSaved: (newValue) {
                       _enteredPassword = newValue!;
                     },
@@ -180,7 +190,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     )
                   : Text(
-                      'Sign up',
+                      'Sign Up',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -189,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             // Sign-in option with navigation
             Row(

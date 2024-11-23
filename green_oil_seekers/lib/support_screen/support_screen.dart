@@ -188,7 +188,7 @@ class _SupportScreenState extends State<SupportScreen> {
 
                       if (user != null) {
                         final userDocRef = FirebaseFirestore.instance
-                            .collection('provider')
+                            .collection('seeker')
                             .doc(user.uid);
                         try {
                           await userDocRef.delete();
