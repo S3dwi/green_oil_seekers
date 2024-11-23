@@ -1,32 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/home_screen/last_order_button.dart';
-import 'package:green_oil_seekers/home_screen/new_location.dart';
 import 'package:green_oil_seekers/home_screen/recycle_button.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
+import 'package:green_oil_seekers/home_screen/address_selector.dart'; // Import AddressSelector
+import 'package:green_oil_seekers/home_screen/add_address_screen.dart'; // Import Add Address Screen
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? _selectedAddress =
+      'Jeddah - Alrabwah 23223, Bin Khalid Alansari, Near Albaik Almarwah branch 6977'; // Default address
+  List<String> _savedAddresses = [
+    'Jeddah - Alrabwah 23223, Bin Khalid Alansari, Near Albaik Almarwah branch 6977'
+  ];
+
+  // Navigate to the Order Flow
   void orderFlow(BuildContext context) {
-    // Navigate to order flow
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>  const ChooseOfferScreen(),
+        builder: (context) => const ChooseOfferScreen(),
       ),
     );
   }
 
-  // method to open the NewExpense page in Bottom sheet
-  void _openAddExpense(BuildContext context) {
+  // Open the Address Selector Modal
+  void _openAddressSelector() {
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => const NewLocation(),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return AddressSelector(
+              savedAddresses: _savedAddresses,
+              onAddressSelected: (address) {
+                setState(() {
+                  _selectedAddress = address; // Update selected address
+                });
+                Navigator.pop(context); // Close modal
+              },
+              onAddNewAddress: () async {
+                final newAddress = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddAddressScreen(),
+                  ),
+                );
+                if (newAddress != null) {
+                  setState(() {
+                    _savedAddresses.add(newAddress); // Add to main list
+                    _selectedAddress = newAddress; // Update selected address
+                  });
+                  setModalState(() {
+                    _savedAddresses =
+                        List.from(_savedAddresses); // Update modal UI
+                  });
+                }
+              },
+            );
+          },
+        );
+      },
     );
   }
 
+  // Navigate to the Last Orders Page
   void lastOrder(BuildContext context) {
-    // Navigate to order flow
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const NavBar(
@@ -43,14 +90,15 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Recycle Button section
+            // Header Section
             SizedBox(
               width: double.infinity,
-              height: 320, // Same vertical size as before
+              height: 320,
               child: Stack(
                 children: [
+                  // Background Image
                   Image.asset(
-                    'assets/images/home_img.png', // Placeholder for the background image
+                    'assets/images/home_img.png',
                     fit: BoxFit.cover,
                     width: double.infinity,
                   ),
@@ -68,7 +116,6 @@ class HomeScreen extends StatelessWidget {
                             fontSize: 48,
                             fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.left,
                         ),
                         Text(
                           'Help the planet & enjoy \nvaluable benefits!',
@@ -77,7 +124,6 @@ class HomeScreen extends StatelessWidget {
                             fontSize: 24,
                             fontWeight: FontWeight.w300,
                           ),
-                          textAlign: TextAlign.left,
                         ),
                       ],
                     ),
@@ -100,7 +146,6 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.location_on,
@@ -110,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'Jeddah - Alrabwah 23223, Bin Khalid Alansari, Near Albaik Almarwah branch 6977',
+                                _selectedAddress!,
                                 style: TextStyle(
                                   fontSize: 16,
                                   color:
@@ -121,9 +166,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {
-                                _openAddExpense(context);
-                              },
+                              onPressed: _openAddressSelector,
                               icon: Icon(
                                 Icons.keyboard_arrow_down,
                                 color: Theme.of(context).shadowColor,
@@ -140,19 +183,16 @@ class HomeScreen extends StatelessWidget {
                     left: 20,
                     right: 20,
                     child: Divider(),
-                    //create line to separate between the components,
-                  )
+                  ),
                 ],
               ),
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
 
+            // Recycle Button
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15), // Same padding
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: RecycleButton(
                 orderFlow: () {
                   orderFlow(context);
@@ -160,9 +200,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(
-              height: 32,
-            ),
+            const SizedBox(height: 32),
 
             // View Last Purchases
             Padding(
@@ -174,12 +212,9 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Bottom Section with Background Image
+            // Bottom Section with Text and Button
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -225,9 +260,7 @@ class HomeScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
                   Align(
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
@@ -252,7 +285,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16), // Spacing
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
