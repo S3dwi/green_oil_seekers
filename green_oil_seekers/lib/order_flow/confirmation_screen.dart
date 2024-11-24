@@ -1,43 +1,15 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 
-import 'order_details_screen.dart';
-
 class ConfirmationScreen extends StatelessWidget {
-  final String oilType;
-  final double qtyOil;
-  final String cityName;
-  final String companyName;
-  final String orderId;
-  final String customerLocation;
-  final String pickupDate;
+  // Add the orderId as a final property
 
-  ConfirmationScreen({
-    super.key,
-    required this.oilType,
-    required this.qtyOil,
-    required this.cityName,
-    required this.companyName,
-    required this.customerLocation,
-    required this.pickupDate,
-    required double totalAmount,
-  }) : orderId = _generateOrderId();
-
-  static String _generateOrderId() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = Random();
-    return List.generate(8, (index) => chars[random.nextInt(chars.length)])
-        .join();
-  }
+  const ConfirmationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.onPrimary,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           Positioned.fill(
@@ -48,21 +20,21 @@ class ConfirmationScreen extends StatelessWidget {
           ),
           Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 150),
                 Image.asset(
                   'assets/images/Vector.png',
-                  width: 100,
-                  height: 100,
+                  width: 225,
+                  height: 225,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 0),
                 Text(
-                  "Order has been placed successfully!",
+                  "Order has been placed \nsuccessfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: colorScheme.primary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -70,72 +42,80 @@ class ConfirmationScreen extends StatelessWidget {
                   "Your support helps the environment\nthrough recycling!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: colorScheme.secondary,
-                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 const SizedBox(height: 50),
                 SizedBox(
-                  width: 320,
+                  width: 350,
                   child: ElevatedButton(
                     onPressed: () {
+                      //Navigate to Schedule screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => OrderDetailsScreen(
-                            orderId: orderId,
-                            oilType: oilType,
-                            qtyOil: qtyOil.toInt(),
-                            companyName: companyName,
-                            customerLocation: customerLocation,
-                            pickupDate: pickupDate,
-                            userEmail:
-                                '', // Pass user email dynamically if needed
+                          builder: (context) => const NavBar(
+                            wantedPage: 1,
                           ),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 100,
+                        vertical: 15,
+                        horizontal: 75,
                       ),
                     ),
                     child: Text(
-                      "VIEW ORDER",
+                      "VIEW ORDERS",
                       style: TextStyle(
-                        color: colorScheme.onPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const Spacer(),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
+                    //Navigate to Home Screen
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(
                         builder: (context) => const NavBar(
                           wantedPage: 0,
                         ),
                       ),
-                      (Route<dynamic> route) => false,
                     );
                   },
                   child: Text(
                     "BACK TO HOME",
                     style: TextStyle(
-                      color: colorScheme.primary,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
                       decoration: TextDecoration.underline,
-                      fontSize: 16,
+                      decorationColor: Theme.of(context).colorScheme.primary,
+                      shadows: [
+                        Shadow(
+                          color: Theme.of(context).colorScheme.primary,
+                          // Match background color to create "gap"
+                          offset: const Offset(0, -5),
+                          // Adjust vertical offset to control space
+                        ),
+                      ],
+                      decorationThickness: 1.5,
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),

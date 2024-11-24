@@ -11,8 +11,9 @@ class OilTypeSelection extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _OilTypeSelectionState createState() => _OilTypeSelectionState();
+  State<StatefulWidget> createState() {
+    return _OilTypeSelectionState();
+  }
 }
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {
@@ -40,7 +41,8 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Wrap(
-      spacing: 8.0,
+      spacing: 14.0,
+      runSpacing: 5,
       children: oilTypes.map((oilType) {
         final isSelected = widget.selectedOilTypes.contains(oilType);
         return ElevatedButton(
@@ -48,7 +50,7 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
             foregroundColor:
                 isSelected ? colorScheme.primary : colorScheme.secondary,
             backgroundColor: isSelected
-                ? colorScheme.onPrimary.withOpacity(0.2)
+                ? colorScheme.onPrimary.withOpacity(0.7)
                 : colorScheme.onPrimary,
             side: BorderSide(
               color: isSelected
@@ -59,6 +61,7 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+            padding: const EdgeInsets.symmetric(horizontal: 34),
           ),
           onPressed: () => _onOilTypeToggle(oilType),
           child: Text(

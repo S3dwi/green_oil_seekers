@@ -1,66 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'order_summary_screen.dart';
+import 'package:green_oil_seekers/order_flow/order_summery_screen.dart';
+import 'package:green_oil_seekers/primary_button.dart';
+import 'package:green_oil_seekers/models/offer.dart';
 
 class OfferDetailsScreen extends StatelessWidget {
-  final String companyName;
-  final String oilType;
-  final int quantity;
-  final double pricePerLiter;
-  final int distance;
-  final String pickupDate;
-  final String companyAddress;
-
   const OfferDetailsScreen({
     super.key,
-    required this.companyName,
-    required this.oilType,
-    required this.quantity,
-    required this.pricePerLiter,
-    required this.distance,
-    required this.pickupDate,
-    required this.companyAddress,
+    required this.offer,
   });
 
-  String _getCompanyLogoPath(String companyName) {
-    const companyLogos = {
-      'ALBAIK CO.': 'assets/images/AlbaikLogo.png',
-      'JAN BURGER': 'assets/images/JanBurgerLogo.png',
-    };
-    return companyLogos[companyName] ?? 'assets/images/default_logo.png';
+  final Offer offer;
+
+  void _sendEmail() async {
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((MapEntry<String, String> e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: offer.customerInfo.providerEmail,
+      query: encodeQueryParameters(<String, String>{
+        'subject': offer.customerInfo.companyName,
+      }),
+    );
+
+    launchUrl(emailLaunchUri);
+  }
+
+  void _openWhatsApp() async {
+    Uri whatsappUrl =
+        Uri.parse("https://wa.me/966${offer.customerInfo.phoneNumber}");
+
+    launchUrl(whatsappUrl);
+  }
+
+  void _calling() async {
+    final Uri url = Uri(
+      scheme: 'tel',
+      path: offer.customerInfo.phoneNumber, // Phone number to dial
+    );
+    launchUrl(url);
   }
 
   @override
   Widget build(BuildContext context) {
-    final totalPrice = (quantity * pricePerLiter).toStringAsFixed(0);
-
+    String formattedDate =
+        '${offer.arrivalDate.day}/${offer.arrivalDate.month}';
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Offers',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        title: Column(
           children: [
-            Card(
-              color: Colors.white,
-              elevation: 2,
+            const SizedBox(height: 37),
+            Text(
+              "Offers",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 28,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            const SizedBox(height: 5),
+          ],
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            size: 30,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 28,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Card(
+              color: Theme.of(context).colorScheme.onPrimary,
+              elevation: 6,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 28,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -68,15 +104,17 @@ class OfferDetailsScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Column(
                         children: [
-                          Image.asset(
-                            _getCompanyLogoPath(companyName),
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
+                          ClipOval(
+                            child: Image.asset(
+                              offer.customerInfo.image,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 10),
                           Text(
-                            companyName,
+                            offer.customerInfo.companyName,
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -85,25 +123,42 @@ class OfferDetailsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 14),
                     Text(
-                      oilType,
+                      getOrderType(offer),
                       style: TextStyle(
                         fontSize: 18,
                         color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text('Quantity: $quantity L'),
-                    Text('Price per liter: $pricePerLiter SAR'),
-                    Text('Distance: $distance KM'),
-                    Text('Pickup Date: $pickupDate'),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Quantity: ${offer.oilQuantity} L',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      'Price per liter: ${(offer.oilPrice / offer.oilQuantity).toStringAsFixed(2)} SAR',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      'Pickup Date: $formattedDate',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 15,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
-                        'SAR $totalPrice',
+                        'SAR ${offer.oilPrice}',
                         style: TextStyle(
                           fontSize: 20,
                           color: Theme.of(context).colorScheme.primary,
@@ -115,54 +170,118 @@ class OfferDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            // Contact Section
-            Column(
+          ),
+          const SizedBox(height: 22),
+
+          // Contact Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Contact $companyName',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  'Contact ${offer.customerInfo.companyName}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildContactIconButton(Icons.phone),
-                    _buildContactIconButton(Icons.email),
-                    _buildContactIconButton(Icons.message),
+                    _buildContactIconButton(
+                      context,
+                      Icons.phone,
+                      _calling,
+                    ),
+                    _buildContactIconButton(
+                      context,
+                      Icons.email,
+                      _sendEmail,
+                    ),
+                    _buildContactIconButton(
+                      context,
+                      Icons.message,
+                      _openWhatsApp,
+                    ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            // Company Location Section
-            const Text(
-              'Company Location',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              color: Colors.white,
-              elevation: 2,
+          ),
+          const SizedBox(height: 26),
+          // Company Location Section
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  'Company Location',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Card(
+              color: Theme.of(context).colorScheme.onPrimary,
+              elevation: 6,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Icon(Icons.location_on, color: Colors.green),
+                    Icon(
+                      Icons.location_on,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 32,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        companyAddress,
-                        style: const TextStyle(fontSize: 16),
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start, // Align text to the start
+                        children: [
+                          Text(
+                            "Company Address",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            offer.location.toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
+                            softWrap:
+                                true, // Allow text to wrap to the next line
+                          ),
+                        ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.directions),
+                      icon: Icon(
+                        Icons.directions,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 28,
+                      ),
                       onPressed: () {
                         // Directions functionality here
                       },
@@ -171,56 +290,57 @@ class OfferDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            // Choose Button
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OrderSummaryScreen(
-                      companyName: companyName,
-                      oilType: oilType,
-                      qtyOil: quantity,
-                      oilPrice: pricePerLiter,
-                      customerLocation: companyAddress,
-                      pickupDate: pickupDate,
-                    ),
+          ),
+
+          const Spacer(),
+          // Choose Button
+          PrimaryButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => OrderSummeryScreen(
+                    offer: offer,
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-              child: const Text(
-                'CHOOSE',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+              );
+            },
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            label: 'CHOOSE',
+            vertical: 13,
+            horizontal: 129.9,
+          ),
+
+          const SizedBox(height: 38),
+        ],
       ),
     );
   }
 
-  Widget _buildContactIconButton(IconData iconData) {
+  Widget _buildContactIconButton(
+      BuildContext context, IconData iconData, void Function() onPressed) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
-          color: Colors.grey[400],
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(12)),
+        color: Theme.of(context).disabledColor,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: IconButton(
-        icon: Icon(iconData, color: Colors.white),
-        onPressed: () {
-          // Add specific functionality for each icon
-        },
+        icon: Icon(iconData, color: Theme.of(context).colorScheme.onSecondary),
+        onPressed: onPressed,
       ),
     );
+  }
+}
+
+String getOrderType(Offer offer) {
+  if (offer.oilType == OilType.cookingOil) {
+    return "Cooking Oil";
+  } else if (offer.oilType == OilType.motorOil) {
+    return "Motor Oil";
+  } else if (offer.oilType == OilType.lubricating) {
+    return "Lubricating Oil";
+  } else {
+    return "ERROR";
   }
 }

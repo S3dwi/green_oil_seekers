@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/models/order.dart';
-import 'package:green_oil_seekers/schedule_screen/order_details.dart';
+
 import 'package:green_oil_seekers/schedule_screen/order_switcher.dart';
+import 'package:green_oil_seekers/schedule_screen/order_details.dart';
+import 'package:green_oil_seekers/models/offer.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({super.key});
 
-  void viewOrderDetails(BuildContext context, Order order) {
+  void viewOrderDetails(BuildContext context, Offer offer) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OrderDetails(
-          order: order,
+          offer: offer,
         ),
       ),
     );

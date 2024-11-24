@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/models/order.dart';
+import 'package:green_oil_seekers/models/offer.dart';
 import 'package:green_oil_seekers/schedule_screen/schedule_screen.dart';
 
 class OrderItem extends StatelessWidget {
-  const OrderItem({super.key, required this.order});
+  const OrderItem({
+    super.key,
+    required this.offer,
+  });
 
-  final Order order;
+  final Offer offer;
 
   @override
   Widget build(BuildContext context) {
     String formattedDate =
-        '${order.arrivalDate.day}/${order.arrivalDate.month}/${order.arrivalDate.year}';
+        '${offer.arrivalDate.day}/${offer.arrivalDate.month}/${offer.arrivalDate.year}';
     return Column(
       children: [
-        getOrderStatus(order, context),
+        getOrderStatus(offer, context),
         Card(
           elevation: 2,
           color: Theme.of(context).colorScheme.onPrimary,
@@ -30,20 +33,20 @@ class OrderItem extends StatelessWidget {
                 // Order ID
                 buildDetailItem(
                   'Order ID',
-                  order.orderID,
+                  offer.orderID.substring(offer.orderID.length - 10),
                   context,
                 ),
                 // Order Type
                 buildDetailItem(
                   'Oil Type',
-                  getOrderType(order),
+                  getOrderType(offer),
                   context,
                 ),
 
                 // Oil Quantity and Points
                 buildDetailItem(
                   'Estimated Quantity',
-                  '${order.oilQuantity.toStringAsFixed(1)}L',
+                  '${offer.oilQuantity.toStringAsFixed(1)}L',
                   context,
                 ),
 
@@ -61,7 +64,7 @@ class OrderItem extends StatelessWidget {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      const ScheduleScreen().viewOrderDetails(context, order);
+                      const ScheduleScreen().viewOrderDetails(context, offer);
                     },
                     child: Text(
                       'View Details',
@@ -119,35 +122,81 @@ Widget buildDetailItem(String label, String value, BuildContext context) {
   );
 }
 
-Widget getOrderStatus(Order order, BuildContext context) {
-  if (order.orderStatus == OrderStatus.processing) {
+Widget getOrderStatus(Offer offer, BuildContext context) {
+  if (offer.orderStatus == OrderStatus.pending) {
     return Row(
       children: [
         const SizedBox(width: 14),
         Icon(
-          Icons.sync_rounded,
+          Icons.update,
           color: Theme.of(context).disabledColor,
+          size: 32,
         ),
         const SizedBox(
           width: 8,
         ),
         Text(
-          "Processing",
+          "Pending",
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 24,
             fontWeight: FontWeight.w900,
             color: Theme.of(context).disabledColor,
           ),
         ),
       ],
     );
-  } else if (order.orderStatus == OrderStatus.completed) {
+  } else if (offer.orderStatus == OrderStatus.accepted) {
+    return Row(
+      children: [
+        const SizedBox(width: 14),
+        Icon(
+          Icons.sync_rounded,
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          size: 32,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Text(
+          "Accepted",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.secondaryContainer,
+          ),
+        ),
+      ],
+    );
+  } else if (offer.orderStatus == OrderStatus.pickupScheduled) {
+    return Row(
+      children: [
+        const SizedBox(width: 14),
+        Icon(
+          Icons.sync_rounded,
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          size: 32,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Text(
+          "Pickup Scheduled",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.secondaryContainer,
+          ),
+        ),
+      ],
+    );
+  } else if (offer.orderStatus == OrderStatus.completed) {
     return Row(
       children: [
         const SizedBox(width: 14),
         Icon(
           Icons.check_circle_outline_rounded,
           color: Theme.of(context).colorScheme.primary,
+          size: 32,
         ),
         const SizedBox(
           width: 8,
@@ -155,7 +204,7 @@ Widget getOrderStatus(Order order, BuildContext context) {
         Text(
           "Completed",
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 24,
             fontWeight: FontWeight.w900,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -169,6 +218,7 @@ Widget getOrderStatus(Order order, BuildContext context) {
         Icon(
           Icons.cancel_outlined,
           color: Theme.of(context).colorScheme.error,
+          size: 32,
         ),
         const SizedBox(
           width: 8,
@@ -176,7 +226,7 @@ Widget getOrderStatus(Order order, BuildContext context) {
         Text(
           "Cancelled",
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 24,
             fontWeight: FontWeight.w900,
             color: Theme.of(context).colorScheme.error,
           ),
@@ -186,12 +236,12 @@ Widget getOrderStatus(Order order, BuildContext context) {
   }
 }
 
-String getOrderType(Order order) {
-  if (order.oilType == OilType.cookingOil) {
+String getOrderType(Offer offer) {
+  if (offer.oilType == OilType.cookingOil) {
     return "Cooking Oil";
-  } else if (order.oilType == OilType.motorOil) {
+  } else if (offer.oilType == OilType.motorOil) {
     return "Motor Oil";
-  } else if (order.oilType == OilType.lubricating) {
+  } else if (offer.oilType == OilType.lubricating) {
     return "Lubricating Oil";
   } else {
     return "ERROR";

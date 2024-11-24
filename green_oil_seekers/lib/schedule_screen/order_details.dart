@@ -1,14 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/models/order.dart';
+
+import 'package:green_oil_seekers/models/offer.dart';
+import 'package:green_oil_seekers/schedule_screen/invoice_screen.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails({
     super.key,
-    required this.order,
+    required this.offer,
   });
 
-  final Order order;
+  final Offer offer;
 
   Widget buildDetailItem(String label, String value, BuildContext context) {
     return Container(
@@ -47,7 +49,7 @@ class OrderDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String formattedDate =
-        '${order.arrivalDate.day}/${order.arrivalDate.month}/${order.arrivalDate.year}';
+        '${offer.arrivalDate.day}/${offer.arrivalDate.month}/${offer.arrivalDate.year}';
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -117,28 +119,35 @@ class OrderDetails extends StatelessWidget {
                     // Order ID
                     buildDetailItem(
                       'Order ID',
-                      order.orderID,
+                      offer.orderID.substring(offer.orderID.length - 10),
                       context,
                     ),
                     const Divider(),
                     // Order Status
                     buildDetailItem(
                       'Order Status',
-                      getOrderStatus(order),
+                      getOrderStatus(offer),
                       context,
                     ),
                     const Divider(),
                     // Oil Type
                     buildDetailItem(
                       'Oil Type',
-                      getOrderType(order),
+                      getOrderType(offer),
                       context,
                     ),
                     const Divider(),
-                    // Oil Quantity and Points
+                    // Oil Quantity
                     buildDetailItem(
                       'Estimated Quantity',
-                      '${order.oilQuantity.toStringAsFixed(1)}L',
+                      '${offer.oilQuantity.toStringAsFixed(1)}L',
+                      context,
+                    ),
+                    const Divider(),
+                    // Oil Price
+                    buildDetailItem(
+                      'Oil Price',
+                      '${offer.oilPrice.toStringAsFixed(1)} SR',
                       context,
                     ),
                     const Divider(),
@@ -152,7 +161,7 @@ class OrderDetails extends StatelessWidget {
                     // Customer Location
                     buildDetailItem(
                       'Customer Location',
-                      order.location.city,
+                      offer.location.city,
                       context,
                     ),
                     const Divider(),
@@ -162,50 +171,85 @@ class OrderDetails extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            // Invoice action
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                            ), // Green border
+                        ElevatedButton(
+                          onPressed:
+                              offer.orderStatus == OrderStatus.completed ||
+                                      offer.orderStatus == OrderStatus.cancelled
+                                  ? () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              InvoiceScreen(offer: offer),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary, // Always keep the same color
+                            disabledBackgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5), // Same color when disabled
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
-                              // Rounded corners
                             ),
-                            minimumSize: const Size(180, 50),
+                            minimumSize: const Size(155, 50),
                           ),
-                          child: Text(
-                            'Invoice',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
+                          child: Opacity(
+                            opacity: offer.orderStatus ==
+                                        OrderStatus.completed ||
+                                    offer.orderStatus == OrderStatus.cancelled
+                                ? 1.0
+                                : 0.5, // Semi-transparent text if disabled
+                            child: Text(
+                              'Invoice',
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                           ),
                         ),
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     // Keep Track action
-                        //   },
-                        //   style: ElevatedButton.styleFrom(
-                        //     backgroundColor: Theme.of(context)
-                        //         .primaryColor, // Green background
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius:
-                        //           BorderRadius.circular(8), // Rounded corners
-                        //     ),
-                        //     minimumSize: const Size(155, 45),
-                        //   ),
-                        //   child: const Text(
-                        //     'Re-order',
-                        //     style: TextStyle(
-                        //         color: Colors.white,
-                        //         fontSize: 18,
-                        //         fontWeight: FontWeight.w900),
-                        //   ),
-                        // ),
+                        ElevatedButton(
+                          onPressed:
+                              offer.orderStatus == OrderStatus.completed ||
+                                      offer.orderStatus == OrderStatus.cancelled
+                                  ? null
+                                  : () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary, // Always keep the same color
+                            disabledBackgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            minimumSize: const Size(180, 50),
+                          ),
+                          child: Opacity(
+                            opacity: offer.orderStatus ==
+                                        OrderStatus.completed ||
+                                    offer.orderStatus == OrderStatus.cancelled
+                                ? 0.5
+                                : 1.0, // Semi-transparent text if disabled
+                            child: Text(
+                              'Track Order',
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -223,12 +267,12 @@ class OrderDetails extends StatelessWidget {
   }
 }
 
-String getOrderType(Order order) {
-  if (order.oilType == OilType.cookingOil) {
+String getOrderType(Offer offer) {
+  if (offer.oilType == OilType.cookingOil) {
     return "Cooking Oil";
-  } else if (order.oilType == OilType.motorOil) {
+  } else if (offer.oilType == OilType.motorOil) {
     return "Motor Oil";
-  } else if (order.oilType == OilType.lubricating) {
+  } else if (offer.oilType == OilType.lubricating) {
     return "Lubricating Oil";
   } else {
     if (kDebugMode) {
@@ -238,12 +282,16 @@ String getOrderType(Order order) {
   }
 }
 
-String getOrderStatus(Order order) {
-  if (order.orderStatus == OrderStatus.processing) {
-    return "Processing";
-  } else if (order.orderStatus == OrderStatus.completed) {
+String getOrderStatus(Offer offer) {
+  if (offer.orderStatus == OrderStatus.pending) {
+    return "Pending";
+  } else if (offer.orderStatus == OrderStatus.accepted) {
+    return "Accepted";
+  } else if (offer.orderStatus == OrderStatus.pickupScheduled) {
+    return "Pickup Scheduled";
+  } else if (offer.orderStatus == OrderStatus.completed) {
     return "Completed";
-  } else if (order.orderStatus == OrderStatus.cancelled) {
+  } else if (offer.orderStatus == OrderStatus.cancelled) {
     return "Cancelled";
   } else {
     if (kDebugMode) {

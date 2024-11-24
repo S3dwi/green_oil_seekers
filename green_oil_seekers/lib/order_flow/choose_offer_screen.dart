@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../primary_button.dart';
-import 'oil_type_selection_screen.dart';
-import 'range_section_screen.dart';
-import 'pick_offer_screen.dart';
+
+import 'package:green_oil_seekers/order_flow/step_progress_indicator.dart';
+import 'package:green_oil_seekers/order_flow/oil_type_selection.dart';
+import 'package:green_oil_seekers/order_flow/pick_offer_screen.dart';
+import 'package:green_oil_seekers/order_flow/range_section.dart';
+import 'package:green_oil_seekers/primary_button.dart';
 
 class ChooseOfferScreen extends StatefulWidget {
   const ChooseOfferScreen({super.key});
@@ -29,48 +31,81 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
-          'Filter Offers',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        centerTitle: true, // Ensures title is centered
+        title: Column(
+          children: [
+            const SizedBox(height: 37),
+            Text(
+              "Filter",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 28,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            const SizedBox(height: 5),
+          ],
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            size: 30,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Oil Type selection
-            const Text(
-              'Oil Type',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 25),
+            child: StepProgressIndicator(
+              currentStep: 0,
+              totalSteps: 4,
             ),
-            const SizedBox(height: 8),
-            OilTypeSelection(
+          ),
+
+          const Divider(),
+
+          // Oil Type selection
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 28,
+              vertical: 12,
+            ),
+            child: Text(
+              'Oil Type',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: OilTypeSelection(
               onSelected: _onOilTypeSelected,
               selectedOilTypes: selectedOilTypes,
             ),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 16),
+          ),
 
-            // Quantity range
-            const Text(
-              'Quantity (L)',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            RangeSection(
+          const SizedBox(height: 12),
+          const Divider(),
+
+          // Quantity range
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+            child: RangeSection(
               title: 'Quantity',
+              titleStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
               unit: 'L',
               min: minQuantity,
               max: maxQuantity,
@@ -81,17 +116,18 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                 });
               },
             ),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 16),
-
-            // Price range
-            const Text(
-              'Price per Liter (SAR)',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            RangeSection(
+          ),
+          const Divider(),
+          const SizedBox(height: 12),
+          // Price range
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: RangeSection(
               title: 'Price',
+              titleStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
               unit: 'SAR',
               min: minPrice,
               max: maxPrice,
@@ -102,39 +138,57 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                 });
               },
             ),
-            const Text(
+          ),
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Text(
               '*Note: price is per liter',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 12),
 
-            // Choose button
-            PrimaryButton(
-              label: 'CHOOSE',
-              onPressed: selectedOilTypes.isNotEmpty
-                  ? () {
-                      // Pass selected oil types and filter values to PickOfferScreen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PickOfferScreen(
-                            selectedOilTypes: selectedOilTypes,
-                            minQuantity: minQuantity,
-                            maxQuantity: maxQuantity,
-                            minPrice: minPrice,
-                            maxPrice: maxPrice,
+          const Divider(),
+
+          const Spacer(),
+
+          // Choose button
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PrimaryButton(
+                onPressed: selectedOilTypes.isNotEmpty
+                    ? () {
+                        // Pass selected oil types and filter values to PickOfferScreen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PickOfferScreen(
+                              selectedOilTypes: selectedOilTypes,
+                              minQuantity: minQuantity,
+                              maxQuantity: maxQuantity,
+                              minPrice: minPrice,
+                              maxPrice: maxPrice,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  : () {},
-              backgroundColor: selectedOilTypes.isNotEmpty
-                  ? colorScheme.primary
-                  : Theme.of(context).disabledColor,
-            ),
-          ],
-        ),
+                        );
+                      }
+                    : () {},
+                backgroundColor: selectedOilTypes.isNotEmpty
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).disabledColor,
+                label: 'CHOOSE',
+                vertical: 13,
+                horizontal: 129.9,
+              ),
+            ],
+          ),
+          const SizedBox(height: 38),
+        ],
       ),
     );
   }

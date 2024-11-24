@@ -45,8 +45,8 @@ class VerifyEmailScreen extends StatelessWidget {
               },
               backgroundColor: Theme.of(context).colorScheme.primary,
               label: 'Resend Email',
-              horizontalPadding: 25,
-              verticalPadding: 13,
+              horizontal: 80,
+              vertical: 13,
             ),
             const SizedBox(height: 40),
             TextButton(

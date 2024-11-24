@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/home_screen/home_screen.dart';
 import 'package:green_oil_seekers/profile_screen/profile_screen.dart';
 import 'package:green_oil_seekers/schedule_screen/schedule_screen.dart';
+// import 'package:green_oil_seekers/schedule_screen/schedule_screen.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key, required this.wantedPage});

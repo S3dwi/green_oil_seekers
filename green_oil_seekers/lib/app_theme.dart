@@ -32,6 +32,7 @@ final colorSchemeLight = ColorScheme.fromSeed(
   surfaceContainer: const Color(0xFF529C57),
   surfaceContainerHigh: const Color(0xFF6DB571),
   surfaceContainerHighest: const Color(0xFFA1D5A4),
+  secondaryContainer: const Color(0xFF0061BF),
 );
 
 ///////////////////////////////////////////////////////////////////
@@ -70,4 +71,6 @@ final colorSchemeDark = ColorScheme.fromSeed(
   surfaceContainer: const Color(0xFF5F885F),
   surfaceContainerHigh: const Color(0xFF435A42),
   surfaceContainerHighest: const Color(0xFF233123),
+
+  secondaryContainer: const Color(0xFF4A90E2),
 );
