@@ -1,9 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_oil_seekers/order_flow/confirmation_screen.dart';
 
 import 'package:green_oil_seekers/order_flow/step_progress_indicator.dart';
+import 'package:green_oil_seekers/order_flow/confirmation_screen.dart';
 import 'package:green_oil_seekers/models/offer.dart';
-import 'package:green_oil_seekers/primary_button.dart';
+import 'package:green_oil_seekers/pay_button.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({
@@ -20,6 +22,75 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   String? selectedPaymentMethod;
+  bool _isLoading = false;
+
+  void _submitRecyclingRequest() async {
+    final seekerEmail = FirebaseAuth.instance.currentUser?.email;
+
+    if (seekerEmail != null) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final databaseRef = FirebaseDatabase.instance.ref('requests');
+
+      try {
+        // Fetch all requests
+        final snapshot = await databaseRef.get();
+
+        if (snapshot.exists) {
+          final data = Map<String, dynamic>.from(snapshot.value as Map);
+
+          // Loop through users and their requests to find the matching requestId
+          for (var userId in data.keys) {
+            final userRequests = Map<String, dynamic>.from(data[userId] as Map);
+
+            if (userRequests.containsKey(widget.offer.orderID)) {
+              // Found the request, update it
+              final requestRef =
+                  databaseRef.child('$userId/${widget.offer.orderID}');
+              await requestRef.update({
+                'seeker Email': seekerEmail,
+                'order Status': 'accepted',
+              });
+
+              if (mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ConfirmationScreen(),
+                  ),
+                );
+              }
+              break; // Stop the loop once the request is updated
+            }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No requests found in the database.'),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to update the request: $e'),
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Stop loading
+          });
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,26 +241,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
           const Spacer(),
 
-          PrimaryButton(
-            onPressed: selectedPaymentMethod != null
-                ? () {
-                    // Navigate to Payment Gateway or make API call to process payment
-                    // and navigate to Confirmation Screen
-
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ConfirmationScreen(),
-                      ),
-                    );
-                  }
-                : () {},
+          PayButton(
+            onPressed: (selectedPaymentMethod != null && !_isLoading)
+                ? _submitRecyclingRequest
+                : () {}, // Pass null when conditions are not met
             backgroundColor: selectedPaymentMethod != null
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).disabledColor,
-            label: 'PAY',
-            vertical: 13,
-            horizontal: 160,
+            vertical: _isLoading ? 15 : 13,
+            horizontal: _isLoading ? 165 : 160,
+            child: _isLoading
+                ? SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  )
+                : Text(
+                    'PAY',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
           ),
+
           const SizedBox(height: 38),
         ],
       ),

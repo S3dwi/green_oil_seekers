@@ -15,6 +15,10 @@ class OfferItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onSelect;
 
+  bool isValidUrl(String url) {
+    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate =
@@ -46,14 +50,17 @@ class OfferItem extends StatelessWidget {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          'assets/images/home_img.png',
-                          width: 85,
-                          height: 85,
-                          fit: BoxFit.cover,
-                        ),
+                      child: CircleAvatar(
+                        radius:
+                            42.5, // Since the width and height of your original image are 85
+                        backgroundImage:
+                            isValidUrl(offer.customerInfo.image.trim())
+                                ? NetworkImage(offer.customerInfo.image.trim())
+                                : const AssetImage(
+                                        'assets/images/profile_picture.png')
+                                    as ImageProvider,
+                        backgroundColor: Colors
+                            .transparent, // Optional: To avoid any background color
                       ),
                     ),
                     const SizedBox(width: 16),

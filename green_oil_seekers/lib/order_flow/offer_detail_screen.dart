@@ -47,6 +47,10 @@ class OfferDetailsScreen extends StatelessWidget {
     launchUrl(url);
   }
 
+  bool isValidUrl(String url) {
+    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate =
@@ -104,13 +108,17 @@ class OfferDetailsScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Column(
                         children: [
-                          ClipOval(
-                            child: Image.asset(
-                              offer.customerInfo.image,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
+                          CircleAvatar(
+                            radius: 55,
+                            // Since the width and height of your original image are 85
+                            backgroundImage: isValidUrl(
+                                    offer.customerInfo.image.trim())
+                                ? NetworkImage(offer.customerInfo.image.trim())
+                                : const AssetImage(
+                                    'assets/images/profile_picture.png',
+                                  ) as ImageProvider,
+                            backgroundColor: Colors.transparent,
+                            // Optional: To avoid any background color
                           ),
                           const SizedBox(height: 10),
                           Text(

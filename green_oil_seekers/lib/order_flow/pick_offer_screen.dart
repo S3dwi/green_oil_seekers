@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:green_oil_seekers/order_flow/step_progress_indicator.dart';
@@ -29,51 +32,28 @@ class PickOfferScreen extends StatefulWidget {
 }
 
 class _PickOfferScreenState extends State<PickOfferScreen> {
-  final List<Offer> offers = [
-    Offer(
-      orderID: 'DS032402',
-      oilType: OilType.cookingOil,
-      oilQuantity: 10.5,
-      oilPrice: 44,
-      arrivalDate: DateTime.now(),
-      orderStatus: OrderStatus.accepted,
-      location: Location(
-        city: 'Jeddah',
-        latitude: 21.735611,
-        longitude: 39.283458,
-      ),
-      customerInfo: CustomerInfo(
-        name: 'Abdulaziz',
-        companyName: 'ALBAIK',
-        phoneNumber: '0505406459',
-        image: 'assets/images/home_img.png',
-        providerEmail: 'provider@example.com',
-        seekerEmail: 'seeker@example.com',
-      ),
-    ),
-    Offer(
-      orderID: 'DS032403',
-      oilType: OilType.motorOil,
-      oilQuantity: 20.0,
-      oilPrice: 80,
-      arrivalDate: DateTime.now().add(const Duration(days: 1)),
-      orderStatus: OrderStatus.pending,
-      location: Location(
-        city: 'Riyadh',
-        latitude: 24.713552,
-        longitude: 46.675297,
-      ),
-      customerInfo: CustomerInfo(
-        name: 'Abdulaziz',
-        companyName: 'ALBAIK',
-        phoneNumber: '0505406459',
-        image: 'assets/images/home_img.png',
-        providerEmail: 'provider@example.com',
-        seekerEmail: 'seeker@example.com',
-      ),
-    ),
-  ];
+  final List<Offer> offers = [];
   int? selectedOfferIndex;
+  var _isLoading = true;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch requests initially
+    gitOffers();
+    // Set up a timer to call getUserRequests every 1 minute
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      gitOffers();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed
+    _timer?.cancel();
+    super.dispose();
+  }
 
   void selectOffer(int index) {
     setState(() {
@@ -81,9 +61,152 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
     });
   }
 
+  void gitOffers() async {
+    try {
+      // Fetch all requests from the 'requests' node
+      final databaseRef = FirebaseDatabase.instance.ref('requests');
+      final snapshot = await databaseRef.get();
+
+      if (snapshot.exists) {
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+        final List<Offer> fetchedOffers = [];
+
+        data.forEach((userId, userRequests) {
+          final userRequestMap = Map<String, dynamic>.from(userRequests as Map);
+          userRequestMap.forEach((requestId, requestData) {
+            final request = Map<String, dynamic>.from(requestData);
+
+            // Check if the order status is pending
+            if (request['order Status']?.toString().toLowerCase() ==
+                'pending') {
+              // Parse Provider Info
+              final providerData =
+                  Map<String, dynamic>.from(request['Provider Info']);
+
+              final CustomerInfo customerInfo = CustomerInfo(
+                name: providerData['Name']?.toString() ?? 'Unknown',
+                companyName:
+                    providerData['Company Name']?.toString() ?? 'Unknown',
+                phoneNumber: providerData['Phone']?.toString() ?? '',
+                image: providerData['image_url']?.toString() ?? '',
+                providerEmail: providerData['Email']?.toString() ?? '',
+                seekerEmail: 'default_email@example.com',
+              );
+
+              // Parse request data
+              final double oilQuantity =
+                  double.parse(request['quantity'].toString());
+              final double oilPrice =
+                  double.parse(request['oil Price'].toString());
+              final String oilType =
+                  request['oil Type'].toString().toLowerCase();
+
+              // Check if the request matches the filters
+              if (widget.selectedOilTypes
+                      .map((e) => e.toLowerCase())
+                      .contains(oilType) &&
+                  oilQuantity >= widget.minQuantity &&
+                  oilQuantity <= widget.maxQuantity &&
+                  oilPrice >= widget.minPrice &&
+                  oilPrice <= widget.maxPrice) {
+                // Create Offer object
+                fetchedOffers.add(
+                  Offer(
+                    orderID: requestId,
+                    oilType: OilType.values.firstWhere(
+                      (e) =>
+                          e.toString().split('.').last.toLowerCase() == oilType,
+                      orElse: () => OilType.cookingOil,
+                    ),
+                    oilQuantity: oilQuantity,
+                    oilPrice: oilPrice,
+                    arrivalDate: DateTime.parse(request['arrival Date']),
+                    orderStatus: OrderStatus.pending,
+                    location: Location(
+                      city: request['location']['city'].toString(),
+                      latitude: double.parse(
+                          request['location']['latitude'].toString()),
+                      longitude: double.parse(
+                          request['location']['longitude'].toString()),
+                    ),
+                    customerInfo: customerInfo,
+                  ),
+                );
+              }
+            }
+          });
+        });
+
+        // Update the offers state
+        setState(() {
+          offers.clear();
+          offers.addAll(fetchedOffers);
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "An error occurred while fetching offers: $error",
+            ),
+          ),
+        );
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget content;
+
+    if (_isLoading) {
+      content = Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 278.5,
+          ),
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      );
+    } else if (offers.isEmpty) {
+      content = Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 282,
+          ),
+          child: Text(
+            'No offers found that match the filters',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.secondary,
+              fontSize: 20,
+            ),
+          ),
+        ),
+      );
+    } else {
+      content = Expanded(
+        child: OffersList(
+          offers: offers,
+          selectedOfferIndex: selectedOfferIndex,
+          onSelect: selectOffer,
+        ),
+      );
+    }
+
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Avoid bottom inset adjustments
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         centerTitle: true,
         title: Column(
@@ -120,13 +243,7 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
               totalSteps: 4,
             ),
           ),
-          Expanded(
-            child: OffersList(
-              offers: offers,
-              selectedOfferIndex: selectedOfferIndex,
-              onSelect: selectOffer,
-            ),
-          ),
+          content,
           const SizedBox(height: 28),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

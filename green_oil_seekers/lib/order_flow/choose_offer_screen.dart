@@ -17,10 +17,10 @@ class ChooseOfferScreen extends StatefulWidget {
 
 class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
   List<String> selectedOilTypes = [];
-  double minQuantity = 100.0;
-  double maxQuantity = 10000.0;
-  double minPrice = 3.0;
-  double maxPrice = 10.0;
+  double minQuantity = 10.0;
+  double maxQuantity = 1000.0;
+  double minPrice = 40.0;
+  double maxPrice = 4000.0;
 
   // Handle the selected oil types
   void _onOilTypeSelected(List<String> selectedTypes) {
@@ -32,6 +32,7 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Avoid bottom inset adjustments
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         centerTitle: true, // Ensures title is centered
