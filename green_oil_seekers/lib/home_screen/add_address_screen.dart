@@ -9,7 +9,8 @@ class AddAddressScreen extends StatefulWidget {
 }
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
-  LatLng? _selectedPosition;
+  LatLng?
+      _selectedPosition; // Variable to store the selected position on the map
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +22,19 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () {
-                Navigator.pop(
-                  context,
-                  _selectedPosition, // Return the selected LatLng
-                );
+                // Return the selected location to the previous screen
+                Navigator.pop(context, _selectedPosition);
               },
             ),
         ],
       ),
       body: GoogleMap(
         initialCameraPosition: const CameraPosition(
-          target: LatLng(21.543333, 39.172778), // Default Jeddah
+          target: LatLng(21.543333, 39.172778), // Default Jeddah location
           zoom: 14.0,
         ),
-        onTap: (position) {
+        onTap: (LatLng position) {
+          // Update the selected position when the user taps on the map
           setState(() {
             _selectedPosition = position;
           });
@@ -44,6 +44,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                 Marker(
                   markerId: const MarkerId('selectedLocation'),
                   position: _selectedPosition!,
+                  infoWindow: const InfoWindow(title: 'Selected Location'),
                 ),
               }
             : {},

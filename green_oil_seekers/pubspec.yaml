@@ -26,6 +26,7 @@ dependencies:
   google_place: ^0.4.7
   connectivity_plus: ^4.0.1
   firebase_database: ^11.1.6
+  geocoding: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -43,7 +44,6 @@ flutter:
     - family: Lato
       fonts:
         - asset: assets/fonts/Lato_Regular.ttf
-
 # The following section is specific to Flutter Native Splash.
 # It is used to customize the launch screen and app icon for different platforms.
 # flutter_native_splash:

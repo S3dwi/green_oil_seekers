@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_oil_seekers/home_screen/last_order_button.dart';
 import 'package:green_oil_seekers/home_screen/recycle_button.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
-import 'package:green_oil_seekers/home_screen/address_selector.dart'; // Import AddressSelector
-import 'package:green_oil_seekers/home_screen/add_address_screen.dart'; // Import Add Address Screen
+import 'package:green_oil_seekers/home_screen/address_selector.dart';
+import 'package:green_oil_seekers/home_screen/add_address_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,22 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? _selectedAddress =
-      'Jeddah - Alrabwah 23223, Bin Khalid Alansari, Near Albaik Almarwah branch 6977'; // Default address
-  List<String> _savedAddresses = [
-    'Jeddah - Alrabwah 23223, Bin Khalid Alansari, Near Albaik Almarwah branch 6977'
-  ];
+  String? _selectedAddress; // Start with no address selected
+  LatLng? _selectedLatLng; // Start with no location selected
+  List<String> _savedAddresses =
+      []; // Start with an empty list of saved addresses
 
-  // Navigate to the Order Flow
-  void orderFlow(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ChooseOfferScreen(),
-      ),
-    );
-  }
-
-  // Open the Address Selector Modal
   void _openAddressSelector() {
     showModalBottomSheet(
       context: context,
@@ -42,28 +32,58 @@ class _HomeScreenState extends State<HomeScreen> {
             return AddressSelector(
               savedAddresses: _savedAddresses,
               onAddressSelected: (address) {
-                setState(() {
-                  _selectedAddress = address; // Update selected address
+                setModalState(() {
+                  _selectedAddress = address;
                 });
-                Navigator.pop(context); // Close modal
+                setState(() {
+                  _selectedAddress = address;
+                });
+                Navigator.pop(context);
               },
               onAddNewAddress: () async {
-                final newAddress = await Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const AddAddressScreen(),
                   ),
                 );
-                if (newAddress != null) {
-                  setState(() {
-                    _savedAddresses.add(newAddress); // Add to main list
-                    _selectedAddress = newAddress; // Update selected address
-                  });
-                  setModalState(() {
-                    _savedAddresses =
-                        List.from(_savedAddresses); // Update modal UI
-                  });
+
+                if (result != null && result is LatLng) {
+                  final newAddress =
+                      'Lat: ${result.latitude.toStringAsFixed(6)}, Lng: ${result.longitude.toStringAsFixed(6)}';
+
+                  // Check for duplicates in the saved addresses
+                  bool isDuplicate =
+                      _savedAddresses.any((address) => address == newAddress);
+
+                  if (!isDuplicate) {
+                    setModalState(() {
+                      _savedAddresses.add(newAddress);
+                    });
+                    setState(() {
+                      _selectedAddress = newAddress;
+                      _selectedLatLng = result;
+                    });
+                  } else {
+                    // Only update the selected address
+                    setState(() {
+                      _selectedAddress = newAddress;
+                      _selectedLatLng = result;
+                    });
+                  }
                 }
+              },
+              onDeleteAddress: (address) {
+                // Delete address and update state
+                setModalState(() {
+                  _savedAddresses.remove(address);
+                });
+                setState(() {
+                  if (_selectedAddress == address) {
+                    _selectedAddress =
+                        null; // Clear selected address if deleted
+                  }
+                });
               },
             );
           },
@@ -72,7 +92,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Navigate to the Last Orders Page
+  void orderFlow(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ChooseOfferScreen(),
+      ),
+    );
+  }
+
   void lastOrder(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -90,18 +117,46 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header Section
             SizedBox(
               width: double.infinity,
               height: 320,
               child: Stack(
                 children: [
                   // Background Image
-                  Image.asset(
-                    'assets/images/home_img.png',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/images/home_img.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  // Google Map
+                  Visibility(
+                    visible: _selectedLatLng != null,
+                    child: Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.0,
+                        child: GoogleMap(
+                          initialCameraPosition: const CameraPosition(
+                            target: LatLng(
+                                21.543333, 39.172778), // Default location
+                            zoom: 14.0,
+                          ),
+                          markers: _selectedLatLng != null
+                              ? {
+                                  Marker(
+                                    markerId:
+                                        const MarkerId('selectedLocation'),
+                                    position: _selectedLatLng!,
+                                    infoWindow: const InfoWindow(
+                                        title: 'Selected Location'),
+                                  ),
+                                }
+                              : {},
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Overlay Text
                   Positioned(
                     top: 60,
                     left: 16,
@@ -118,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          'Find and Buy Used Oil \nEasily.',
+                          'Help the planet & enjoy \nvaluable benefits!',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 24,
@@ -155,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                _selectedAddress!,
+                                _selectedAddress ?? 'No address selected',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color:
@@ -178,19 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const Positioned(
-                    bottom: 0,
-                    left: 20,
-                    right: 20,
-                    child: Divider(),
-                  ),
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // Recycle Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: RecycleButton(
@@ -199,10 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-
-            const SizedBox(height: 24),
-
-            // View Last Purchases
+            const SizedBox(height: 32),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: LastOrderButton(
@@ -211,14 +254,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-
-            // Bottom Section with Text and Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 30),
                   RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(
@@ -279,7 +320,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Contact Us',
                           style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.w600,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),

@@ -9,7 +9,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  LatLng? _selectedPosition; // Store the selected position
+  LatLng? _selectedPosition; // Selected position from the map
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +21,20 @@ class _MapScreenState extends State<MapScreen> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () {
-                // Return the selected position to the previous screen
-                Navigator.pop(context, _selectedPosition);
+                Navigator.pop(context, _selectedPosition); // Return LatLng
               },
             ),
         ],
       ),
       body: GoogleMap(
         initialCameraPosition: const CameraPosition(
-          target: LatLng(21.543333, 39.172778), // Default Jeddah
+          target: LatLng(21.543333, 39.172778), // Default: Jeddah
           zoom: 14.0,
         ),
+        liteModeEnabled: true, // Enable Lite mode for performance
         onTap: (position) {
           setState(() {
-            _selectedPosition = position; // Save tapped position
+            _selectedPosition = position; // Save the selected position
           });
         },
         markers: _selectedPosition != null
