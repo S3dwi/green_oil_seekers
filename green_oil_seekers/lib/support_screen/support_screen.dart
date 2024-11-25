@@ -104,7 +104,8 @@ class _SupportScreenState extends State<SupportScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ChangePasswordScreen(),
+                                builder: (context) =>
+                                    const ChangePasswordScreen(),
                               ),
                             );
                           },
@@ -238,7 +239,7 @@ class _SupportScreenState extends State<SupportScreen> {
                             if (mounted) {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text(
                                     'Failed to delete user authentication.',
                                   ),
@@ -250,7 +251,7 @@ class _SupportScreenState extends State<SupportScreen> {
                           if (mounted) {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text('Failed to delete user data.'),
                               ),
                             );

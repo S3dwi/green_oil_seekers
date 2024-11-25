@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 12), // Reduced space between buttons
+                  const SizedBox(width: 12), // Reduced space between buttons
 
                   // Log Out Button
                   ElevatedButton(
@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             radius: 64,
                             backgroundImage: isValidUrl(userImageUrl.trim())
                                 ? NetworkImage(userImageUrl)
-                                : AssetImage(
+                                : const AssetImage(
                                         'assets/images/profile_picture.png')
                                     as ImageProvider,
                           ),
@@ -223,7 +223,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => EditProfileScreen(),
+                                  builder: (context) =>
+                                      const EditProfileScreen(),
                                 ),
                               );
                             },

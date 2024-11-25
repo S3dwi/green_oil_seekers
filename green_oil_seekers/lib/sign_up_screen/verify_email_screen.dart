@@ -58,7 +58,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               vertical: 10,
               horizontal: 90,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextButton(
               onPressed: () {
                 //Navigate to Sign In screen

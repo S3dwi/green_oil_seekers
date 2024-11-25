@@ -35,7 +35,7 @@ class OrderItem extends StatelessWidget {
                   offer.orderID.substring(offer.orderID.length - 10),
                   context,
                 ),
-                Divider(thickness: 1.2, height: 10), // Add a divider here
+                const Divider(thickness: 1.2, height: 10), // Add a divider here
 
                 // Order Type
                 buildDetailItem(
@@ -43,7 +43,7 @@ class OrderItem extends StatelessWidget {
                   getOrderType(offer),
                   context,
                 ),
-                Divider(thickness: 1.2, height: 10), // Add a divider here
+                const Divider(thickness: 1.2, height: 10), // Add a divider here
 
                 // Oil Quantity and Points
                 buildDetailItem(
@@ -51,7 +51,7 @@ class OrderItem extends StatelessWidget {
                   '${offer.oilQuantity.toStringAsFixed(1)}L',
                   context,
                 ),
-                Divider(thickness: 1.2, height: 10), // Add a divider here
+                const Divider(thickness: 1.2, height: 10), // Add a divider here
 
                 // Pickup Date
                 buildDetailItem(
