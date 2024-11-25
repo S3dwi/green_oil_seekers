@@ -52,13 +52,12 @@ class OfferItem extends StatelessWidget {
                       },
                       child: CircleAvatar(
                         radius:
-                            42.5, // Since the width and height of your original image are 85
-                        backgroundImage:
-                            isValidUrl(offer.customerInfo.image.trim())
-                                ? NetworkImage(offer.customerInfo.image.trim())
-                                : const AssetImage(
-                                        'assets/images/profile_picture.png')
-                                    as ImageProvider,
+                            34, // Since the width and height of your original image are 85
+                        backgroundImage: isValidUrl(
+                                offer.customerInfo.image.trim())
+                            ? NetworkImage(offer.customerInfo.image.trim())
+                            : const AssetImage('assets/images/logo_grey.png')
+                                as ImageProvider,
                         backgroundColor: Colors
                             .transparent, // Optional: To avoid any background color
                       ),

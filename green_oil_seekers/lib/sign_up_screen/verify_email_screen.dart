@@ -4,9 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/primary_button.dart';
 import 'package:green_oil_seekers/sign_in_screen/sign_in_screen.dart';
 
-class VerifyEmailScreen extends StatelessWidget {
+class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({super.key});
+  @override
+  State<StatefulWidget> createState() {
+    return _VerifyEmailScreenState();
+  }
+}
 
+class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,18 +43,22 @@ class VerifyEmailScreen extends StatelessWidget {
               onPressed: () {
                 // Send verification email here
                 FirebaseAuth.instance.currentUser?.sendEmailVerification();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
-                  ),
-                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Verification link has been sent to your email. Please check your inbox or junk email.'),
+                    ),
+                  );
+                }
               },
               backgroundColor: Theme.of(context).colorScheme.primary,
               label: 'Resend Email',
-              horizontal: 80,
-              vertical: 13,
+              vertical: 10,
+              horizontal: 90,
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 24),
             TextButton(
               onPressed: () {
                 //Navigate to Sign In screen

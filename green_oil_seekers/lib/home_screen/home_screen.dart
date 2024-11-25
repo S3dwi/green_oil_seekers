@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          'Help the planet & enjoy \nvaluable benefits!',
+                          'Find and Buy Used Oil \nEasily.',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 24,
@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
 
             // View Last Purchases
             Padding(
@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
                   RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(
@@ -279,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Contact Us',
                           style: TextStyle(
                             fontSize: 15,
+                            fontWeight: FontWeight.w600,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),

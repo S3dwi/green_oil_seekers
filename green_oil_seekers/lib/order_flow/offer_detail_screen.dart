@@ -115,7 +115,7 @@ class OfferDetailsScreen extends StatelessWidget {
                                     offer.customerInfo.image.trim())
                                 ? NetworkImage(offer.customerInfo.image.trim())
                                 : const AssetImage(
-                                    'assets/images/profile_picture.png',
+                                    'assets/images/logo_grey.png',
                                   ) as ImageProvider,
                             backgroundColor: Colors.transparent,
                             // Optional: To avoid any background color
@@ -168,7 +168,7 @@ class OfferDetailsScreen extends StatelessWidget {
                       child: Text(
                         'SAR ${offer.oilPrice}',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
                         ),
@@ -226,7 +226,7 @@ class OfferDetailsScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'Company Location',
+                  '${offer.customerInfo.companyName} Location',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

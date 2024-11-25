@@ -35,7 +35,7 @@ class RecycleButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Recycle Your Oil Now!",
+                "Buy Used Oil Easily",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSecondary,
                   fontSize: 24,
@@ -43,7 +43,7 @@ class RecycleButton extends StatelessWidget {
                 ),
               ),
               Text(
-                "Schedule your used oil pickup in seconds",
+                "Explore offers and find used oil in seconds",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSecondary,
                   fontSize: 15,

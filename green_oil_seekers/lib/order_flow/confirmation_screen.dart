@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
 
 class ConfirmationScreen extends StatelessWidget {
-  // Add the orderId as a final property
-
   const ConfirmationScreen({super.key});
 
   @override
@@ -21,7 +19,7 @@ class ConfirmationScreen extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                const SizedBox(height: 150),
+                const SizedBox(height: 132),
                 Image.asset(
                   'assets/images/Vector.png',
                   width: 225,
@@ -47,12 +45,13 @@ class ConfirmationScreen extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 32),
+                // Primary Button
                 SizedBox(
                   width: 350,
                   child: ElevatedButton(
                     onPressed: () {
-                      //Navigate to Schedule screen
+                      // Navigate to Schedule screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -82,10 +81,11 @@ class ConfirmationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 24), // Spacer between buttons
+                // Back to Home Button
                 TextButton(
                   onPressed: () {
-                    //Navigate to Home Screen
+                    // Navigate to Home Screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
