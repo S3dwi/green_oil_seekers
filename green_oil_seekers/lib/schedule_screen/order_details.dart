@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:green_oil_seekers/models/offer.dart';
 import 'package:green_oil_seekers/schedule_screen/invoice_screen.dart';
+import 'package:green_oil_seekers/schedule_screen/track_order_screen.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails({
@@ -215,11 +216,19 @@ class OrderDetails extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed:
-                              offer.orderStatus == OrderStatus.completed ||
-                                      offer.orderStatus == OrderStatus.cancelled
-                                  ? null
-                                  : () {},
+                          onPressed: offer.orderStatus ==
+                                      OrderStatus.completed ||
+                                  offer.orderStatus == OrderStatus.cancelled
+                              ? null
+                              : () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => TrackOrderScreen(
+                                        offer: offer,
+                                      ),
+                                    ),
+                                  );
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context)
                                 .colorScheme
@@ -283,10 +292,8 @@ String getOrderType(Offer offer) {
 }
 
 String getOrderStatus(Offer offer) {
-  if (offer.orderStatus == OrderStatus.pending) {
-    return "Pending";
-  } else if (offer.orderStatus == OrderStatus.accepted) {
-    return "Accepted";
+  if (offer.orderStatus == OrderStatus.accepted) {
+    return "Order Accepted";
   } else if (offer.orderStatus == OrderStatus.pickupScheduled) {
     return "Pickup Scheduled";
   } else if (offer.orderStatus == OrderStatus.completed) {

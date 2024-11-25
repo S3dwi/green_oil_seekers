@@ -20,7 +20,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
   final List<Offer> _ongoingOrders = [];
   final List<Offer> _historyOrders = [];
   int selectedIndex = 0;
-  var _isLoading = false;
+  var _isLoading = true;
   Timer? _timer;
 
   @override
@@ -31,7 +31,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
     getUserRequests();
 
     // Set up a timer to call getUserRequests every 2 minutes
-    _timer = Timer.periodic(const Duration(minutes: 2), (timer) {
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       getUserRequests();
     });
   }
@@ -65,7 +65,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
               final request = Map<String, dynamic>.from(requestData);
 
               if (request['seeker Email']?.toString().toLowerCase() ==
-                  seekerEmail) {
+                  seekerEmail.toLowerCase()) {
                 // Parse Provider Info
                 final providerData =
                     Map<String, dynamic>.from(request['Provider Info']);
@@ -77,7 +77,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                   phoneNumber: providerData['Phone']?.toString() ?? '',
                   image: providerData['image_url']?.toString() ?? '',
                   providerEmail: providerData['Email']?.toString() ?? '',
-                  seekerEmail: 'default_email@example.com',
+                  seekerEmail: seekerEmail,
                 );
 
                 // Parse request data
@@ -87,6 +87,17 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                     double.parse(request['oil Price'].toString());
                 final String oilType =
                     request['oil Type'].toString().toLowerCase();
+
+                // Parse orderStatus dynamically from the request
+                final String status =
+                    request['order Status']?.toString().toLowerCase() ??
+                        'pending';
+
+                final OrderStatus orderStatus = OrderStatus.values.firstWhere(
+                  (e) => e.toString().split('.').last.toLowerCase() == status,
+                  orElse: () =>
+                      OrderStatus.pending, // Default to pending if not found
+                );
 
                 final Offer offer = Offer(
                   orderID: requestId,
@@ -98,7 +109,8 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                   oilQuantity: oilQuantity,
                   oilPrice: oilPrice,
                   arrivalDate: DateTime.parse(request['arrival Date']),
-                  orderStatus: OrderStatus.pending,
+                  orderStatus:
+                      orderStatus, // Use the dynamically parsed orderStatus
                   location: Location(
                     city: request['location']['city'].toString(),
                     latitude: double.parse(
@@ -109,6 +121,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                   customerInfo: customerInfo,
                 );
 
+                // Add to the correct list based on the order status
                 if (offer.orderStatus == OrderStatus.completed ||
                     offer.orderStatus == OrderStatus.cancelled) {
                   _historyOrders.add(offer);

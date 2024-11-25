@@ -121,7 +121,7 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                     oilQuantity: oilQuantity,
                     oilPrice: oilPrice,
                     arrivalDate: DateTime.parse(request['arrival Date']),
-                    orderStatus: OrderStatus.pending,
+                    orderStatus: OrderStatus.accepted,
                     location: Location(
                       city: request['location']['city'].toString(),
                       latitude: double.parse(

@@ -126,29 +126,7 @@ Widget buildDetailItem(String label, String value, BuildContext context) {
 }
 
 Widget getOrderStatus(Offer offer, BuildContext context) {
-  if (offer.orderStatus == OrderStatus.pending) {
-    return Row(
-      children: [
-        const SizedBox(width: 14),
-        Icon(
-          Icons.update,
-          color: Theme.of(context).disabledColor,
-          size: 32,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        Text(
-          "Pending",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
-            color: Theme.of(context).disabledColor,
-          ),
-        ),
-      ],
-    );
-  } else if (offer.orderStatus == OrderStatus.accepted) {
+  if (offer.orderStatus == OrderStatus.accepted) {
     return Row(
       children: [
         const SizedBox(width: 14),
@@ -161,7 +139,7 @@ Widget getOrderStatus(Offer offer, BuildContext context) {
           width: 8,
         ),
         Text(
-          "Accepted",
+          "Order Accepted",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w900,
