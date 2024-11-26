@@ -112,7 +112,6 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
                   orderStatus:
                       orderStatus, // Use the dynamically parsed orderStatus
                   location: Location(
-                    city: request['location']['city'].toString(),
                     latitude: double.parse(
                         request['location']['latitude'].toString()),
                     longitude: double.parse(

@@ -162,7 +162,7 @@ class OrderDetails extends StatelessWidget {
                     // Customer Location
                     buildDetailItem(
                       'Customer Location',
-                      offer.location.city,
+                      offer.location.toString(),
                       context,
                     ),
                     const Divider(),

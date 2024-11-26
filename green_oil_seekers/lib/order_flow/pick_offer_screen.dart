@@ -123,7 +123,6 @@ class _PickOfferScreenState extends State<PickOfferScreen> {
                     arrivalDate: DateTime.parse(request['arrival Date']),
                     orderStatus: OrderStatus.accepted,
                     location: Location(
-                      city: request['location']['city'].toString(),
                       latitude: double.parse(
                           request['location']['latitude'].toString()),
                       longitude: double.parse(

@@ -56,7 +56,6 @@ class OrderSummeryScreen extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             child: Align(
@@ -71,7 +70,6 @@ class OrderSummeryScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Card(
             elevation: 2,
             color: Theme.of(context).colorScheme.onPrimary,
@@ -101,7 +99,7 @@ class OrderSummeryScreen extends StatelessWidget {
                   const Divider(),
                   buildDetailItem(
                     'Customer Location',
-                    offer.location.city,
+                    offer.location.toString(),
                     context,
                   ),
                   const Divider(),

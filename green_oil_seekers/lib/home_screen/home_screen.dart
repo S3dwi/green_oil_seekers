@@ -1,95 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:green_oil_seekers/home_screen/Location/address_selector.dart';
+import 'package:green_oil_seekers/models/offer.dart';
+import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
 import 'package:green_oil_seekers/home_screen/last_order_button.dart';
 import 'package:green_oil_seekers/home_screen/recycle_button.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
-import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
-import 'package:green_oil_seekers/home_screen/address_selector.dart';
-import 'package:green_oil_seekers/home_screen/add_address_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<StatefulWidget> createState() {
+    return _HomeScreenState();
+  }
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   String? _selectedAddress; // Start with no address selected
-  LatLng? _selectedLatLng; // Start with no location selected
-  List<String> _savedAddresses =
-      []; // Start with an empty list of saved addresses
 
   void _openAddressSelector() {
-    showModalBottomSheet(
+    showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return AddressSelector(
-              savedAddresses: _savedAddresses,
-              onAddressSelected: (address) {
-                setModalState(() {
-                  _selectedAddress = address;
-                });
-                setState(() {
-                  _selectedAddress = address;
-                });
-                Navigator.pop(context);
-              },
-              onAddNewAddress: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddAddressScreen(),
-                  ),
-                );
+      builder: (context) => AddressSelector(
+        onLocationsChanged: (hasChanged) {
+          if (hasChanged) {
+            setState(() {
+              _selectedAddress = null;
+            });
+          }
+        },
+      ),
+    ).then((result) {
+      // Assuming 'result' can be null, which it can be if the modal is dismissed with no action
+      setState(() {
+        if (result != null) {
+          Location? selectedLocation =
+              result['location']; // Declare as nullable
+          bool listChanged = result['listChanged'];
 
-                if (result != null && result is LatLng) {
-                  final newAddress =
-                      'Lat: ${result.latitude.toStringAsFixed(6)}, Lng: ${result.longitude.toStringAsFixed(6)}';
-
-                  // Check for duplicates in the saved addresses
-                  bool isDuplicate =
-                      _savedAddresses.any((address) => address == newAddress);
-
-                  if (!isDuplicate) {
-                    setModalState(() {
-                      _savedAddresses.add(newAddress);
-                    });
-                    setState(() {
-                      _selectedAddress = newAddress;
-                      _selectedLatLng = result;
-                    });
-                  } else {
-                    // Only update the selected address
-                    setState(() {
-                      _selectedAddress = newAddress;
-                      _selectedLatLng = result;
-                    });
-                  }
-                }
-              },
-              onDeleteAddress: (address) {
-                // Delete address and update state
-                setModalState(() {
-                  _savedAddresses.remove(address);
-                });
-                setState(() {
-                  if (_selectedAddress == address) {
-                    _selectedAddress =
-                        null; // Clear selected address if deleted
-                  }
-                });
-              },
-            );
-          },
-        );
-      },
-    );
+          if (!listChanged && selectedLocation != null) {
+            _selectedAddress = selectedLocation.toString();
+          } else {
+            _selectedAddress = null;
+          }
+        } else {
+          _selectedAddress = null;
+        }
+      });
+    });
   }
 
   void orderFlow(BuildContext context) {
@@ -127,33 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Image.asset(
                       'assets/images/home_img.png',
                       fit: BoxFit.cover,
-                    ),
-                  ),
-                  // Google Map
-                  Visibility(
-                    visible: _selectedLatLng != null,
-                    child: Positioned.fill(
-                      child: Opacity(
-                        opacity: 0.0,
-                        child: GoogleMap(
-                          initialCameraPosition: const CameraPosition(
-                            target: LatLng(
-                                21.543333, 39.172778), // Default location
-                            zoom: 14.0,
-                          ),
-                          markers: _selectedLatLng != null
-                              ? {
-                                  Marker(
-                                    markerId:
-                                        const MarkerId('selectedLocation'),
-                                    position: _selectedLatLng!,
-                                    infoWindow: const InfoWindow(
-                                        title: 'Selected Location'),
-                                  ),
-                                }
-                              : {},
-                        ),
-                      ),
                     ),
                   ),
                   // Overlay Text
