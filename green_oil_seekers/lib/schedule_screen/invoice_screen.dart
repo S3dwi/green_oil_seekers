@@ -137,10 +137,41 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       context,
                     ),
                     const Divider(),
-                    buildDetailItem(
-                      'Customer Email',
-                      widget.offer.customerInfo.providerEmail,
-                      context,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Customer Email',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 60,
+                          ),
+                          Expanded(
+                            child: Text(
+                              widget.offer.customerInfo.providerEmail,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const Divider(),
                     buildDetailItem(

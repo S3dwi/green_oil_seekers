@@ -6,6 +6,7 @@ import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
 import 'package:green_oil_seekers/home_screen/last_order_button.dart';
 import 'package:green_oil_seekers/home_screen/recycle_button.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,6 +71,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _sendEmail() async {
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((MapEntry<String, String> e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'greenoilchatgpt@gmail.com',
+      query: encodeQueryParameters(<String, String>{
+        'subject': 'Greenoil',
+      }),
+    );
+
+    launchUrl(emailLaunchUri);
   }
 
   @override
@@ -240,9 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Add contact us action
-                      },
+                      onPressed: _sendEmail,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         fixedSize: const Size(125, 32),

@@ -51,9 +51,10 @@ class _MapScreenState extends State<MapScreen> {
       };
 
       await _saveLocationToFirestore(userId, location);
-
-      // Optionally navigate back or show a success message
-      Navigator.pop(context);
+      if (mounted) {
+        // Optionally navigate back or show a success message
+        Navigator.pop(context);
+      }
     }
   }
 

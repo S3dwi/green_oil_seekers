@@ -216,49 +216,7 @@ class _SupportScreenState extends State<SupportScreen> {
 
                   // Delete Account Button
                   ElevatedButton(
-                    onPressed: () async {
-                      User? user = FirebaseAuth.instance.currentUser;
-
-                      if (user != null) {
-                        final userDocRef = FirebaseFirestore.instance
-                            .collection('seeker')
-                            .doc(user.uid);
-                        try {
-                          await userDocRef.delete();
-
-                          try {
-                            await user.delete();
-                            if (mounted) {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const SignInScreen(),
-                                ),
-                              );
-                            }
-                          } catch (authError) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Failed to delete user authentication.',
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        } catch (firestoreError) {
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Failed to delete user data.'),
-                              ),
-                            );
-                          }
-                        }
-                      }
-                    },
+                    onPressed: _deleteAccount,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -280,5 +238,48 @@ class _SupportScreenState extends State<SupportScreen> {
         );
       },
     );
+  }
+
+  void _deleteAccount() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final userDocRef =
+          FirebaseFirestore.instance.collection('seeker').doc(user.uid);
+      try {
+        await userDocRef.delete();
+
+        try {
+          await user.delete();
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const SignInScreen(),
+              ),
+            );
+          }
+        } catch (authError) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Failed to delete user authentication.',
+                ),
+              ),
+            );
+          }
+        }
+      } catch (firestoreError) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to delete user data.'),
+            ),
+          );
+        }
+      }
+    }
   }
 }

@@ -135,16 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Log Out Button
                   ElevatedButton(
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // Close the dialog
-                      await FirebaseAuth.instance.signOut();
-                      if (!mounted) return;
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const SignInScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: _logOut,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -165,6 +156,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _logOut() async {
+    Navigator.of(context).pop(); // Close the dialog
+    await FirebaseAuth.instance.signOut();
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const SignInScreen(),
+      ),
     );
   }
 

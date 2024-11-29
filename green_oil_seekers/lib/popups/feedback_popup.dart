@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FeedbackPopup extends StatefulWidget {
-  final VoidCallback onClose;
-  final ValueChanged<int> onSend;
-
   const FeedbackPopup({
     super.key,
-    required this.onClose,
-    required this.onSend,
   });
 
   @override
@@ -42,13 +37,6 @@ class _FeedbackPopupState extends State<FeedbackPopup> {
     });
   }
 
-  void _submitFeedback() {
-    if (isSendEnabled) {
-      widget.onSend(selectedRating);
-      Navigator.of(context).pop(); // Close the dialog
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -59,7 +47,7 @@ class _FeedbackPopupState extends State<FeedbackPopup> {
           const Text('Give Feedback'),
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: widget.onClose,
+            onPressed: () {},
           ),
         ],
       ),
@@ -99,16 +87,15 @@ class _FeedbackPopupState extends State<FeedbackPopup> {
       ),
       actions: [
         TextButton(
-          onPressed: widget.onClose,
+          onPressed: () {},
           child: const Text(
             'ASK ME LATER',
             style: TextStyle(color: Colors.green),
           ),
         ),
         ElevatedButton(
-          onPressed: isSendEnabled
-              ? _submitFeedback
-              : null, // Enable if conditions are met
+          onPressed:
+              isSendEnabled ? () {} : null, // Enable if conditions are met
           style: ElevatedButton.styleFrom(
             backgroundColor: isSendEnabled
                 ? Colors.green

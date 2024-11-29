@@ -83,13 +83,15 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
         });
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "An error occurred while fetching the current step: $error",
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "An error occurred while fetching the current step: $error",
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -226,26 +228,29 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
               await orderRef.update({
                 'order Status': newStatus,
               });
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Order status updated to $newStatus",
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Order status updated to $newStatus",
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }
           });
         });
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "An error occurred while updating the order status: $error",
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "An error occurred while updating the order status: $error",
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 

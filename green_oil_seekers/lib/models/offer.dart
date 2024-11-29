@@ -73,3 +73,19 @@ class CustomerInfo {
     required this.seekerEmail,
   });
 }
+
+class ProfileInfo {
+  final String name;
+  final String companyName;
+  final String phoneNumber;
+  final String image;
+  final String email;
+
+  ProfileInfo({
+    required this.name,
+    required this.companyName,
+    required this.phoneNumber,
+    required this.image,
+    required this.email,
+  });
+}

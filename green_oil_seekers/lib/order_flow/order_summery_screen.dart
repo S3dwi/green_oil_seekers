@@ -97,10 +97,41 @@ class OrderSummeryScreen extends StatelessWidget {
                     context,
                   ),
                   const Divider(),
-                  buildDetailItem(
-                    'Customer Location',
-                    offer.location.toString(),
-                    context,
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Customer Location',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 90,
+                        ),
+                        Expanded(
+                          child: Text(
+                            offer.location.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const Divider(),
                   buildDetailItem(
