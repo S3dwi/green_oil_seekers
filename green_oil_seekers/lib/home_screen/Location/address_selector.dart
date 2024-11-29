@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:green_oil_seekers/home_screen/Location/lacation_item.dart';
 import 'package:green_oil_seekers/home_screen/Location/map_screen.dart';
 import 'package:green_oil_seekers/models/offer.dart';
 
 class AddressSelector extends StatefulWidget {
+  // Constructor for the AddressSelector widget with a callback for location changes.
   const AddressSelector({
     super.key,
     required this.onLocationsChanged,
   });
 
+  // Function to be called when locations are changed.
   final Function(bool hasChanged) onLocationsChanged;
 
   @override
@@ -20,9 +23,12 @@ class AddressSelector extends StatefulWidget {
 }
 
 class _AddressSelectorState extends State<AddressSelector> {
+  // List of Location objects to display in the UI.
   final List<Location> lacation = [];
+  // Boolean flag to track if locations have changed.
   bool _hasChanged = false;
 
+  // Method to set _hasChanged to true once any location change is detected.
   void _markAsChanged() {
     if (!_hasChanged) {
       setState(() {
@@ -34,15 +40,17 @@ class _AddressSelectorState extends State<AddressSelector> {
   @override
   void initState() {
     super.initState();
-    getLocationsFromFirestore();
+    getLocationsFromFirestore(); // Fetch locations from Firestore on init.
   }
 
   @override
   void dispose() {
-    widget.onLocationsChanged(_hasChanged);
+    widget.onLocationsChanged(
+        _hasChanged); // Call the callback function with the change flag.
     super.dispose();
   }
 
+  // Fetches user's saved locations from Firestore.
   void getLocationsFromFirestore() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -58,10 +66,8 @@ class _AddressSelectorState extends State<AddressSelector> {
           var locationData =
               docSnapshot.data()?['savedLocations'] as List<dynamic>?;
           if (locationData != null) {
-            // This check is valid if 'as List<dynamic>?' is used
             for (var loc in locationData) {
               if (loc is Map<String, dynamic>) {
-                // Ensures each item is a valid map
                 Location newLocation = Location.fromMap(loc);
                 setState(() {
                   lacation.add(newLocation);
@@ -83,6 +89,7 @@ class _AddressSelectorState extends State<AddressSelector> {
     }
   }
 
+  // Opens the MapScreen to allow selection of a new address.
   void _addNewLocation() async {
     final newLocation = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -92,6 +99,7 @@ class _AddressSelectorState extends State<AddressSelector> {
     if (newLocation != null) {
       setState(() {
         lacation.add(newLocation);
+        _markAsChanged();
       });
     }
   }
@@ -129,6 +137,7 @@ class _AddressSelectorState extends State<AddressSelector> {
                 onDelete: () {
                   setState(() {
                     lacation.removeAt(index);
+                    _markAsChanged();
                   });
                 },
                 onSelect: () {

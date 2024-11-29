@@ -52,6 +52,7 @@ class NameTextField extends StatelessWidget {
           fillColor: Theme.of(context).colorScheme.onPrimary,
           filled: true,
         ),
+        // validat name
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter your name';

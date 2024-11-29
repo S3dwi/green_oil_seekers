@@ -148,6 +148,7 @@ class _SupportScreenState extends State<SupportScreen> {
     );
   }
 
+  // Function to delete user account
   void _deleteUserAccount() async {
     showDialog(
       context: context,
@@ -240,6 +241,7 @@ class _SupportScreenState extends State<SupportScreen> {
     );
   }
 
+  // delete account from Firestore and Firebase Authentication
   void _deleteAccount() async {
     User? user = FirebaseAuth.instance.currentUser;
 

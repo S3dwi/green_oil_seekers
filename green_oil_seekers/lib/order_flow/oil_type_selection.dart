@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+// StatefulWidget that allows users to select oil types from a list of options.
 class OilTypeSelection extends StatefulWidget {
-  final ValueChanged<List<String>> onSelected;
-  final List<String> selectedOilTypes;
+  final ValueChanged<List<String>>
+      onSelected; // Callback when selection changes.
+  final List<String> selectedOilTypes; // Currently selected oil types.
 
   const OilTypeSelection({
     super.key,
-    required this.onSelected,
-    required this.selectedOilTypes,
+    required this.onSelected, // Initializes the callback function.
+    required this.selectedOilTypes, // Initializes the list of selected oil types.
   });
 
   @override
@@ -18,22 +20,24 @@ class OilTypeSelection extends StatefulWidget {
 
 class _OilTypeSelectionState extends State<OilTypeSelection> {
   final List<String> oilTypes = [
-    'Cooking Oil',
+    'Cooking Oil', // Different types of oils that can be selected.
     'Motor Oil',
     'Lubricating Oil',
   ];
 
-  // Update the selectedOilTypes list based on user selection
+  // Toggles the inclusion of an oil type in the selectedOilTypes list.
   void _onOilTypeToggle(String oilType) {
     setState(() {
       if (widget.selectedOilTypes.contains(oilType)) {
-        widget.selectedOilTypes.remove(oilType);
+        widget.selectedOilTypes
+            .remove(oilType); // Remove the oil type if it is already selected.
       } else {
-        widget.selectedOilTypes.add(oilType);
+        widget.selectedOilTypes
+            .add(oilType); // Add the oil type if it is not selected.
       }
     });
-    widget
-        .onSelected(widget.selectedOilTypes); // Pass the updated selection back
+    widget.onSelected(
+        widget.selectedOilTypes); // Trigger the callback with updated list.
   }
 
   @override
@@ -41,10 +45,11 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Wrap(
-      spacing: 14.0,
-      runSpacing: 5,
+      spacing: 14.0, // Horizontal space between buttons.
+      runSpacing: 5, // Vertical space between buttons.
       children: oilTypes.map((oilType) {
-        final isSelected = widget.selectedOilTypes.contains(oilType);
+        final isSelected = widget.selectedOilTypes
+            .contains(oilType); // Check if oil type is selected.
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
             foregroundColor:
@@ -59,13 +64,15 @@ class _OilTypeSelectionState extends State<OilTypeSelection> {
               width: 1,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius:
+                  BorderRadius.circular(8), // Rounded corners for buttons.
             ),
             padding: const EdgeInsets.symmetric(horizontal: 34),
           ),
-          onPressed: () => _onOilTypeToggle(oilType),
+          onPressed: () =>
+              _onOilTypeToggle(oilType), // Handle press to toggle selection.
           child: Text(
-            oilType,
+            oilType, // Display the oil type.
             style: TextStyle(
               color: isSelected ? colorScheme.primary : colorScheme.secondary,
               fontWeight: FontWeight.bold,

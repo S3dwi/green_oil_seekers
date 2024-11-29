@@ -1,6 +1,6 @@
-// components/step_progress_indicator.dart
 import 'package:flutter/material.dart';
 
+// StatelessWidget that visually represents a step-by-step progress indicator.
 class StepProgressIndicator extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
@@ -14,45 +14,59 @@ class StepProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment
+          .center, // Centers the steps horizontally within the parent.
       children: List.generate(totalSteps, (index) {
+        // Generates a list of widgets for each step.
         return Row(
           children: [
             Stack(
-              alignment: Alignment.center,
+              alignment: Alignment
+                  .center, // Centers the smaller circle within the larger one.
               children: [
                 Container(
-                  width: 15,
-                  height: 15,
+                  width: 15, // Outer circle width.
+                  height: 15, // Outer circle height.
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: BoxShape.circle, // Makes the container circular.
                     border: Border.all(
                       color: index <= currentStep
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).disabledColor,
-                      width: 2,
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primary // Color for completed or current steps.
+                          : Theme.of(context)
+                              .disabledColor, // Color for incomplete steps.
+                      width: 2, // Border thickness.
                     ),
                   ),
                 ),
                 Container(
-                  width: 7,
-                  height: 7,
+                  width: 7, // Inner circle width.
+                  height: 7, // Inner circle height.
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: BoxShape.circle, // Makes the container circular.
                     color: index <= currentStep
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).disabledColor,
+                        ? Theme.of(context)
+                            .colorScheme
+                            .primary // Color for completed or current steps.
+                        : Theme.of(context)
+                            .disabledColor, // Color for incomplete steps.
                   ),
                 ),
               ],
             ),
-            if (index < totalSteps - 1)
+            if (index <
+                totalSteps -
+                    1) // Checks if the current step is not the last step.
               Container(
-                width: 50,
-                height: 2,
+                width: 50, // Width of the connecting line.
+                height: 2, // Height of the connecting line.
                 color: index < currentStep
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).disabledColor,
+                    ? Theme.of(context)
+                        .colorScheme
+                        .primary // Color for completed part of the line.
+                    : Theme.of(context)
+                        .disabledColor, // Color for incomplete part of the line.
               ),
           ],
         );

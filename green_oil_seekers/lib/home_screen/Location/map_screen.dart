@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_oil_seekers/models/offer.dart';
 
 class MapScreen extends StatefulWidget {
+  // Constructor for the MapScreen widget.
   const MapScreen({super.key});
 
   @override
@@ -14,18 +15,19 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  // Variable to store the selected position on the map.
   LatLng? _selectedPosition;
-  // Variable to store the selected position on the map
 
+  // Method to save the selected location to Firestore.
   Future<void> _saveLocationToFirestore(
       String userId, Map<String, dynamic> location) async {
     try {
       final firestore = FirebaseFirestore.instance;
 
-      // Reference to the user's saved locations
+      // Reference to the user's saved locations document.
       final userRef = firestore.collection('seeker').doc(userId);
 
-      // Add the location to the user's "savedLocations" array
+      // Add the location to the user's "savedLocations" array.
       await userRef.update({
         'savedLocations': FieldValue.arrayUnion([location]),
       });
@@ -41,6 +43,7 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  // Callback for when a location is selected on the map.
   void _onLocationSelected(LatLng position) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -64,6 +67,7 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Add New Address'),
         actions: [
+          // Action button to save the selected location if there is one
           if (_selectedPosition != null)
             IconButton(
               icon: const Icon(Icons.check),
@@ -92,6 +96,7 @@ class _MapScreenState extends State<MapScreen> {
         },
         markers: _selectedPosition != null
             ? {
+                // Display a marker at the selected location
                 Marker(
                   markerId: const MarkerId('selectedLocation'),
                   position: _selectedPosition!,

@@ -22,6 +22,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
   var _enteredEmail = '';
   bool _isLoading = false;
 
+  // reset password function
   void _resetPassword() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:green_oil_seekers/models/offer.dart';
 
 class LacationItem extends StatefulWidget {
+  // Constructor to create a LocationItem widget with necessary parameters.
   const LacationItem({
     super.key,
     required this.location,
@@ -25,21 +25,25 @@ class LacationItem extends StatefulWidget {
 }
 
 class _LacationItemState extends State<LacationItem> {
+  // Method to delete a location from Firestore and the local list.
   void _deleteLocation(int index) async {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+    final userId =
+        FirebaseAuth.instance.currentUser?.uid; // Get the current user's ID.
     if (userId != null) {
       try {
         final firestore = FirebaseFirestore.instance;
         final userRef = firestore.collection('seeker').doc(userId);
         final doc = await userRef.get();
+
         if (doc.exists && doc.data() != null) {
+          // Retrieves the saved locations from Firestore, removes the one at the specified index, then updates Firestore.
           var currentLocations = List<Map<String, dynamic>>.from(
               doc.data()!['savedLocations'] as List);
           if (index >= 0 && index < currentLocations.length) {
             currentLocations.removeAt(index);
             await userRef.update({'savedLocations': currentLocations});
             widget
-                .onDelete(); // Call the passed callback after successful deletion
+                .onDelete(); // Invoke the deletion callback after successful removal.
           }
         }
       } catch (e) {
@@ -67,7 +71,8 @@ class _LacationItemState extends State<LacationItem> {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: widget.onSelect,
+                  onTap: widget
+                      .onSelect, // Trigger the select callback when tapped.
                   child: Row(
                     children: [
                       Icon(
@@ -78,7 +83,8 @@ class _LacationItemState extends State<LacationItem> {
                       const SizedBox(width: 2),
                       Expanded(
                         child: Text(
-                          widget.location.toString(),
+                          widget.location
+                              .toString(), // Display the location as a string.
                           style: TextStyle(
                             fontSize: 14,
                             color: Theme.of(context).colorScheme.secondary,
@@ -94,7 +100,8 @@ class _LacationItemState extends State<LacationItem> {
               const SizedBox(width: 10),
               IconButton(
                 onPressed: () {
-                  _deleteLocation(widget.index);
+                  _deleteLocation(widget
+                      .index); // Call delete method when the delete icon is pressed.
                 },
                 icon: Icon(
                   Icons.delete,

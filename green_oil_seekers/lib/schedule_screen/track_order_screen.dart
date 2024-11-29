@@ -55,6 +55,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     }
   }
 
+  // fetch the current step from the database
   Future<void> _fetchCurrentStep() async {
     try {
       final databaseRef = FirebaseDatabase.instance.ref('requests');
@@ -112,6 +113,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     }
   }
 
+  // show a confirmation dialog before proceeding to the next step
   void _showConfirmationDialog(int step) {
     showDialog(
       context: context,
@@ -197,6 +199,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     );
   }
 
+  // Update the order status in the database.
   void _updateOrderStat(int step) async {
     try {
       String newStatus;

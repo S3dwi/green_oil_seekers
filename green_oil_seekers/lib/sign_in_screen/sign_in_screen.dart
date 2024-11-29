@@ -24,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   var _enteredPassword = '';
   bool _isLoading = false;
 
-  // Function to handle SignIn
+  // sign in with email and password
   void _signIn() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+// StatelessWidget for creating a logout card which users can tap to log out.
 class LogOut extends StatelessWidget {
   const LogOut({
     super.key,
-    required this.onTap,
+    required this.onTap, // Callback function that gets called on tap.
   });
 
-  final void Function() onTap;
+  final void Function() onTap; // Function to execute when the card is tapped.
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,8 @@ class LogOut extends StatelessWidget {
       width: 375,
       height: 85,
       child: InkWell(
-        onTap: onTap,
+        onTap:
+            onTap, // Triggers the provided onTap function when the card is tapped.
         borderRadius: BorderRadius.circular(16),
         child: Card(
           elevation: 4,
@@ -28,7 +30,7 @@ class LogOut extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  "Log out",
+                  "Log out", // Text displayed on the card.
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,

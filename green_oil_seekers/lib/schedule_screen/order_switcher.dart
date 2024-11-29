@@ -43,6 +43,7 @@ class _OrderSwitcherState extends State<OrderSwitcher> {
     super.dispose();
   }
 
+  // get user requests from Firebase Realtime Database
   void getUserRequests() async {
     try {
       final seekerEmail = FirebaseAuth.instance.currentUser?.email;
