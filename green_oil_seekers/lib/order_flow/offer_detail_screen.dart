@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:green_oil_seekers/order_flow/display_location.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:green_oil_seekers/order_flow/order_summery_screen.dart';
@@ -291,7 +292,12 @@ class OfferDetailsScreen extends StatelessWidget {
                         size: 28,
                       ),
                       onPressed: () {
-                        // Directions functionality here
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DisplayLocation(location: offer.location),
+                          ),
+                        );
                       },
                     ),
                   ],
