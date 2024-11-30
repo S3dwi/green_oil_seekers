@@ -20,6 +20,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  // Global key to track and validate the form
   final _form = GlobalKey<FormState>();
 
   var _enteredName = '';
@@ -29,6 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _enteredPassword = '';
   bool _isLoading = false;
 
+  // Function to handle account creation
   void _createAccount() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
@@ -75,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } finally {
         if (mounted) {
           setState(() {
-            _isLoading = false;
+            _isLoading = false; // Stop loading
           });
         }
       }
@@ -85,159 +87,153 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Allow scrolling on smaller screens
+      resizeToAvoidBottomInset: false, // Avoid bottom inset adjustments
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20), // Space at top
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 10), // Spacing at top
 
-                // Logo
-                Image.asset(
-                  "assets/icon/logo.png",
-                  width: 60,
-                ),
+            // Logo image at top center
+            Image.asset(
+              "assets/icon/logo.png",
+              width: 60,
+            ),
 
-                const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
-                // Title
-                Text(
-                  "Create Account",
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.secondary,
+            // Screen title
+            Text(
+              "Create Account",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+
+            const SizedBox(height: 3),
+
+            // Subtitle
+            Text(
+              "Be Recycled by join us today!",
+              style: TextStyle(
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+
+            const SizedBox(height: 50), // Space before form
+
+            // Sign-Up form with input fields
+            Form(
+              key: _form,
+              child: Column(
+                children: [
+                  // Name input field
+                  NameTextField(
+                    label: 'Person Name (Required)',
+                    onSaved: (newValue) {
+                      _enteredName = newValue!;
+                    },
                   ),
-                ),
-
-                const SizedBox(height: 5),
-
-                // Subtitle
-                Text(
-                  "Be Recycled by join us today!",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.secondary,
+                  const SizedBox(height: 15),
+                  NameTextField(
+                    label: 'Company Name (Required)',
+                    onSaved: (newValue) {
+                      _enteredNameCompany = newValue!;
+                    },
                   ),
-                ),
+                  const SizedBox(height: 15),
 
-                const SizedBox(height: 40), // Space before form
-
-                // Sign-up Form
-                Form(
-                  key: _form,
-                  child: Column(
-                    children: [
-                      // Name Field
-                      NameTextField(
-                        label: 'Person Name (Required)',
-                        onSaved: (newValue) {
-                          _enteredName = newValue!;
-                        },
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Company Name Field
-                      NameTextField(
-                        label: 'Company Name (Required)',
-                        onSaved: (newValue) {
-                          _enteredNameCompany = newValue!;
-                        },
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Phone Field
-                      PhoneTextField(
-                        onSaved: (newValue) {
-                          _enteredPhone = newValue!;
-                        },
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Email Field
-                      EmailTextField(
-                        label: 'Email Address (Required)',
-                        onSaved: (newValue) {
-                          _enteredEmail = newValue!;
-                        },
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Password Field
-                      PasswordSignup(
-                        onSaved: (newValue) {
-                          _enteredPassword = newValue!;
-                        },
-                      ),
-                    ],
+                  // Phone number input field
+                  PhoneTextField(
+                    onSaved: (newValue) {
+                      _enteredPhone = newValue!;
+                    },
                   ),
-                ),
+                  const SizedBox(height: 15),
 
-                const SizedBox(height: 20),
+                  // Email input field with label
+                  EmailTextField(
+                    label: 'Email Address (Required)',
+                    onSaved: (newValue) {
+                      _enteredEmail = newValue!;
+                    },
+                  ),
+                  const SizedBox(height: 15),
 
-                // Sign Up Button
-                AuthButton(
-                  onPressed: _isLoading ? (){} : _createAccount,
-                  vertical: 13,
-                  horizontal: 140,
-                  child: _isLoading
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        )
-                      : Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
-                        ),
-                ),
+                  // Password input field with label
+                  PasswordSignup(
+                    onSaved: (newValue) {
+                      _enteredPassword = newValue!;
+                    },
+                  ),
+                ],
+              ),
+            ),
 
-                const SizedBox(height: 20),
+            const Spacer(), // Fills remaining space to push button to the bottom
 
-                // Navigate to Sign In
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account?",
+            // Sign-Up button
+            AuthButton(
+              onPressed: _isLoading ? () {} : _createAccount,
+              vertical: _isLoading ? 15 : 13,
+              horizontal: _isLoading ? 165 : 139.7,
+              child: _isLoading
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      'Sign Up',
                       style: TextStyle(
-                        fontSize: 17,
-                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                     ),
-                    const SizedBox(width: 5),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const SignInScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Sign in",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 17,
-                        ),
-                      ),
-                    ),
-                  ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Sign-in option with navigation
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Already have an account?",
+                  style: TextStyle(
+                    fontSize: 17,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(width: 5),
+                InkWell(
+                  onTap: () {
+                    // Navigate back to Sign-in screen
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SignInScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Sign in",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );

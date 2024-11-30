@@ -15,12 +15,12 @@ class InvoiceScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _InvoiceScreenState();
+    return InvoiceScreenState();
   }
 }
 
-class _InvoiceScreenState extends State<InvoiceScreen> {
-  bool _loading = false; // Default loading state
+class InvoiceScreenState extends State<InvoiceScreen> {
+  bool loading = false; // Default loading state
 
   @override
   Widget build(BuildContext context) {
@@ -216,14 +216,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
             ),
             const SizedBox(height: 28),
             AuthButton(
-              onPressed: _loading
+              onPressed: loading
                   ? () {}
                   : () async {
-                      await _generateInvoicePDF(context);
+                      await generateInvoicePDF(context);
                     },
-              vertical: _loading ? 15 : 13,
-              horizontal: _loading ? 165 : 89.7,
-              child: _loading
+              vertical: loading ? 15 : 13,
+              horizontal: loading ? 165 : 89.7,
+              child: loading
                   ? SizedBox(
                       height: 30,
                       width: 30,
@@ -277,11 +277,11 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     );
   }
 
-  Future<void> _generateInvoicePDF(BuildContext context) async {
+  Future<void> generateInvoicePDF(BuildContext context) async {
     final pdf = pw.Document();
 
     setState(() {
-      _loading = true;
+      loading = true;
     });
 
     pdf.addPage(
@@ -369,7 +369,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          _loading = false; // Stop loading
+          loading = false; // Stop loading
         });
       }
     }

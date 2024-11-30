@@ -39,7 +39,7 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
           children: [
             const SizedBox(height: 37),
             Text(
-              "Filter",
+              "Offer Finder",
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 28,
@@ -156,7 +156,7 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
 
             const Divider(),
 
-            const SizedBox(height: 20), // Added spacing to avoid overlap
+            const SizedBox(height: 100), // Added spacing to avoid overlap
 
             // Choose button
             Row(
@@ -183,9 +183,9 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                   backgroundColor: selectedOilTypes.isNotEmpty
                       ? Theme.of(context).colorScheme.primary
                       : Theme.of(context).disabledColor,
-                  label: 'CHOOSE',
+                  label: 'FIND OFFERS',
                   vertical: 13,
-                  horizontal: 129.9,
+                  horizontal: 104.35,
                 ),
               ],
             ),
