@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LastOrderButton extends StatelessWidget {
+  // Constructor for the LastOrderButton widget with a callback function.
   const LastOrderButton({
     super.key,
     required this.lastOrder,
@@ -12,23 +13,24 @@ class LastOrderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        lastOrder();
+        lastOrder(); // Execute the provided callback function on button press.
       },
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius:
+              BorderRadius.circular(16), // Rounded corners of the button.
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         padding: const EdgeInsets.symmetric(
           vertical: 16,
           horizontal: 15,
         ),
-        //shadow looks only apply horizontally, need to improve
-        elevation: 6, // This adds the shadow
-        shadowColor: Theme.of(context).shadowColor, // Shadow color
+        elevation: 6, // Elevation for a shadow effect.
+        shadowColor: Theme.of(context).shadowColor, // Color of the shadow.
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Align children in the row.
         children: [
           Text(
             'View Your Orders',
@@ -38,7 +40,7 @@ class LastOrderButton extends StatelessWidget {
             ),
           ),
           Icon(
-            Icons.arrow_forward_ios,
+            Icons.arrow_forward_ios, // Arrow icon indicating forward action.
             color: Theme.of(context).disabledColor,
           ),
         ],

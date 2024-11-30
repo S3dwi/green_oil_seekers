@@ -19,6 +19,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   var _enteredEmail = '';
   bool _isLoading = false;
 
+  // send email to reset password
   void _resetPassword() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
@@ -237,6 +238,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ),
           ),
           const Spacer(),
+          // Reset Password Button
           AuthButton(
             onPressed: _isLoading ? () {} : _resetPassword,
             vertical: _isLoading ? 15 : 13,

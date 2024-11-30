@@ -31,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     fetchUserInfo();
   }
 
+  // fetch user data from Firestore and update the state
   void fetchUserInfo() async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
 
@@ -66,6 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // navigate to support center screen
   void helpCenter(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -74,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // sign out functionality
   void _signOut() async {
     showDialog(
       context: context,

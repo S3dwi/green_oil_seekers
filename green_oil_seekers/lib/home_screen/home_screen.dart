@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:green_oil_seekers/home_screen/Location/address_selector.dart';
-import 'package:green_oil_seekers/models/offer.dart';
 import 'package:green_oil_seekers/order_flow/choose_offer_screen.dart';
 import 'package:green_oil_seekers/home_screen/last_order_button.dart';
 import 'package:green_oil_seekers/home_screen/recycle_button.dart';
+import 'package:green_oil_seekers/models/offer.dart';
 import 'package:green_oil_seekers/nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
+  // Constructor for the HomeScreen widget.
   const HomeScreen({super.key});
 
   @override
@@ -18,8 +20,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? _selectedAddress; // Start with no address selected
+  @override
+  void initState() {
+    super.initState();
+    _loadAddress();
+  }
 
+  String? _selectedAddress; // Start with no address selected
+  // method to open the NewExpense page in Bottom sheet
   void _openAddressSelector() {
     showModalBottomSheet<Map<String, dynamic>>(
       context: context,
@@ -45,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           if (!listChanged && selectedLocation != null) {
             _selectedAddress = selectedLocation.toString();
+            _saveAddress(_selectedAddress!);
           } else {
             _selectedAddress = null;
           }
@@ -55,6 +64,19 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _loadAddress() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedAddress = prefs.getString('selectedAddress');
+    });
+  }
+
+  void _saveAddress(String address) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedAddress', address);
+  }
+
+  // Navigates to the order flow.
   void orderFlow(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -63,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Navigates to the screen showing the last orders.
   void lastOrder(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -73,8 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Opens the default mail app with a pre-filled email.
   void _sendEmail() async {
     String? encodeQueryParameters(Map<String, String> params) {
+      // Encodes parameters for URL.
       return params.entries
           .map((MapEntry<String, String> e) =>
               '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
@@ -104,14 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 320,
               child: Stack(
                 children: [
-                  // Background Image
+                  // Background Image.
                   Positioned.fill(
                     child: Image.asset(
                       'assets/images/home_img.png',
                       fit: BoxFit.cover,
                     ),
                   ),
-                  // Overlay Text
+                  // Overlay Text.
                   Positioned(
                     top: 60,
                     left: 16,
@@ -165,7 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                _selectedAddress ?? 'No address selected',
+                                _selectedAddress ??
+                                    'No address selected', // Displays the selected or default address text.
                                 style: TextStyle(
                                   fontSize: 16,
                                   color:
@@ -196,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: RecycleButton(
                 orderFlow: () {
-                  orderFlow(context);
+                  orderFlow(context); // Trigger order flow.
                 },
               ),
             ),
@@ -205,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: LastOrderButton(
                 lastOrder: () {
-                  lastOrder(context);
+                  lastOrder(context); // Trigger last order viewing.
                 },
               ),
             ),

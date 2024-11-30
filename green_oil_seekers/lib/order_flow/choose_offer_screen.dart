@@ -98,7 +98,7 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
           const SizedBox(height: 12),
           const Divider(),
 
-          // Quantity range
+          // Section for selecting the quantity range.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
             child: RangeSection(
@@ -107,9 +107,9 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
-              unit: 'L',
-              min: minQuantity,
-              max: maxQuantity,
+              unit: 'L', // Unit of measurement.
+              min: minQuantity, // Minimum quantity.
+              max: maxQuantity, // Maximum quantity.
               onRangeSelected: (min, max) {
                 setState(() {
                   minQuantity = min;
@@ -120,7 +120,8 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
           ),
           const Divider(),
           const SizedBox(height: 12),
-          // Price range
+
+          // Section for selecting the price range.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: RangeSection(
@@ -129,9 +130,9 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
-              unit: 'SAR',
-              min: minPrice,
-              max: maxPrice,
+              unit: 'SAR', // Currency unit.
+              min: minPrice, // Minimum price.
+              max: maxPrice, // Maximum price.
               onRangeSelected: (min, max) {
                 setState(() {
                   minPrice = min;
@@ -178,7 +179,7 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
                           ),
                         );
                       }
-                    : () {},
+                    : () {}, // Disables button if no selection is made.
                 backgroundColor: selectedOilTypes.isNotEmpty
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).disabledColor,

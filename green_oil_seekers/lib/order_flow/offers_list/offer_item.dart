@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:green_oil_seekers/models/offer.dart';
 import 'package:green_oil_seekers/order_flow/offer_detail_screen.dart';
 
 class OfferItem extends StatelessWidget {
+  // Constructor for the OfferItem widget with necessary properties.
   const OfferItem({
     super.key,
     required this.offer,
@@ -15,25 +15,31 @@ class OfferItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onSelect;
 
+  // Helper method to validate if a given URL is valid.
   bool isValidUrl(String url) {
     return Uri.tryParse(url)?.hasAbsolutePath ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Formatting the arrival date of the offer.
     String formattedDate =
         '${offer.arrivalDate.day}/${offer.arrivalDate.month}';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
       child: GestureDetector(
-        onTap: onSelect,
+        onTap:
+            onSelect, // Executes the onSelect callback when the card is tapped.
         child: Card(
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: Theme.of(context)
+              .colorScheme
+              .onPrimary, // Background color of the card.
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius:
+                BorderRadius.circular(12), // Rounded corners for the card.
           ),
-          elevation: 6,
+          elevation: 6, // Shadow depth for the card.
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Stack(
@@ -42,6 +48,7 @@ class OfferItem extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        // Navigates to the offer details screen when the avatar is tapped.
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => OfferDetailsScreen(
@@ -51,15 +58,13 @@ class OfferItem extends StatelessWidget {
                         );
                       },
                       child: CircleAvatar(
-                        radius:
-                            34, // Since the width and height of your original image are 85
+                        radius: 34, // Radius of the avatar.
                         backgroundImage: isValidUrl(
                                 offer.customerInfo.image.trim())
                             ? NetworkImage(offer.customerInfo.image.trim())
                             : const AssetImage('assets/images/logo_grey.png')
                                 as ImageProvider,
-                        backgroundColor: Colors
-                            .transparent, // Optional: To avoid any background color
+                        backgroundColor: Colors.transparent,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -69,6 +74,7 @@ class OfferItem extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              // Navigates to the offer details screen when the text is tapped.
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => OfferDetailsScreen(
@@ -78,7 +84,8 @@ class OfferItem extends StatelessWidget {
                               );
                             },
                             child: Text(
-                              getOrderType(offer),
+                              getOrderType(
+                                  offer), // Converts the oil type enum to a string.
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -117,16 +124,18 @@ class OfferItem extends StatelessWidget {
                   top: 0,
                   right: 0,
                   child: Radio<int>(
-                    value: 1, // The index of this offer
-                    groupValue: isSelected ? 1 : null, // Selected state
-                    onChanged: (_) => onSelect(), // Notify parent
+                    value: 1,
+                    groupValue:
+                        isSelected ? 1 : null, // Selected state management.
+                    onChanged: (_) =>
+                        onSelect(), // Execute onSelect when the radio button is changed.
                   ),
                 ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: Text(
-                    '${offer.oilPrice} SAR',
+                    '${offer.oilPrice} SAR', // Displays the price of the oil.
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
@@ -143,6 +152,7 @@ class OfferItem extends StatelessWidget {
   }
 }
 
+// Function to convert the oil type enum to a readable string.
 String getOrderType(Offer offer) {
   if (offer.oilType == OilType.cookingOil) {
     return "Cooking Oil";
@@ -151,6 +161,6 @@ String getOrderType(Offer offer) {
   } else if (offer.oilType == OilType.lubricating) {
     return "Lubricating Oil";
   } else {
-    return "ERROR";
+    return "ERROR"; // Error case if none of the expected types match.
   }
 }
