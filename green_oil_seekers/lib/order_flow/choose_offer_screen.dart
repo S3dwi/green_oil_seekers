@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'package:green_oil_seekers/order_flow/step_progress_indicator.dart';
 import 'package:green_oil_seekers/order_flow/oil_type_selection.dart';
 import 'package:green_oil_seekers/order_flow/pick_offer_screen.dart';
 import 'package:green_oil_seekers/order_flow/range_section.dart';
+import 'package:green_oil_seekers/order_flow/step_progress_indicator.dart';
 import 'package:green_oil_seekers/primary_button.dart';
 
 class ChooseOfferScreen extends StatefulWidget {
@@ -59,138 +58,140 @@ class _ChooseOfferScreenState extends State<ChooseOfferScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 25),
-            child: StepProgressIndicator(
-              currentStep: 0,
-              totalSteps: 4,
-            ),
-          ),
-
-          const Divider(),
-
-          // Oil Type selection
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 12,
-            ),
-            child: Text(
-              'Oil Type',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      // FIXED: Added SingleChildScrollView to prevent RenderFlex overflow
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 25),
+              child: StepProgressIndicator(
+                currentStep: 0,
+                totalSteps: 4,
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: OilTypeSelection(
-              onSelected: _onOilTypeSelected,
-              selectedOilTypes: selectedOilTypes,
-            ),
-          ),
 
-          const SizedBox(height: 12),
-          const Divider(),
+            const Divider(),
 
-          // Section for selecting the quantity range.
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-            child: RangeSection(
-              title: 'Quantity',
-              titleStyle: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            // Oil Type selection
+            const Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 28,
+                vertical: 12,
               ),
-              unit: 'L', // Unit of measurement.
-              min: minQuantity, // Minimum quantity.
-              max: maxQuantity, // Maximum quantity.
-              onRangeSelected: (min, max) {
-                setState(() {
-                  minQuantity = min;
-                  maxQuantity = max;
-                });
-              },
-            ),
-          ),
-          const Divider(),
-          const SizedBox(height: 12),
-
-          // Section for selecting the price range.
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: RangeSection(
-              title: 'Price',
-              titleStyle: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              unit: 'SAR', // Currency unit.
-              min: minPrice, // Minimum price.
-              max: maxPrice, // Maximum price.
-              onRangeSelected: (min, max) {
-                setState(() {
-                  minPrice = min;
-                  maxPrice = max;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Text(
-              '*Note: price is per liter',
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.secondary,
+              child: Text(
+                'Oil Type',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: OilTypeSelection(
+                onSelected: _onOilTypeSelected,
+                selectedOilTypes: selectedOilTypes,
+              ),
+            ),
 
-          const Divider(),
+            const SizedBox(height: 12),
+            const Divider(),
 
-          const Spacer(),
+            // Section for selecting the quantity range.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+              child: RangeSection(
+                title: 'Quantity',
+                titleStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                unit: 'L', // Unit of measurement.
+                min: minQuantity, // Minimum quantity.
+                max: maxQuantity, // Maximum quantity.
+                onRangeSelected: (min, max) {
+                  setState(() {
+                    minQuantity = min;
+                    maxQuantity = max;
+                  });
+                },
+              ),
+            ),
+            const Divider(),
+            const SizedBox(height: 12),
 
-          // Choose button
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PrimaryButton(
-                onPressed: selectedOilTypes.isNotEmpty
-                    ? () {
-                        // Pass selected oil types and filter values to PickOfferScreen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PickOfferScreen(
-                              selectedOilTypes: selectedOilTypes,
-                              minQuantity: minQuantity,
-                              maxQuantity: maxQuantity,
-                              minPrice: minPrice,
-                              maxPrice: maxPrice,
+            // Section for selecting the price range.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: RangeSection(
+                title: 'Price',
+                titleStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                unit: 'SAR', // Currency unit.
+                min: minPrice, // Minimum price.
+                max: maxPrice, // Maximum price.
+                onRangeSelected: (min, max) {
+                  setState(() {
+                    minPrice = min;
+                    maxPrice = max;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Text(
+                '*Note: price is per liter',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            const Divider(),
+
+            const SizedBox(height: 20), // Added spacing to avoid overlap
+
+            // Choose button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PrimaryButton(
+                  onPressed: selectedOilTypes.isNotEmpty
+                      ? () {
+                          // Pass selected oil types and filter values to PickOfferScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PickOfferScreen(
+                                selectedOilTypes: selectedOilTypes,
+                                minQuantity: minQuantity,
+                                maxQuantity: maxQuantity,
+                                minPrice: minPrice,
+                                maxPrice: maxPrice,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    : () {}, // Disables button if no selection is made.
-                backgroundColor: selectedOilTypes.isNotEmpty
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).disabledColor,
-                label: 'CHOOSE',
-                vertical: 13,
-                horizontal: 129.9,
-              ),
-            ],
-          ),
-          const SizedBox(height: 38),
-        ],
+                          );
+                        }
+                      : () {}, // Disable button if no selection is made
+                  backgroundColor: selectedOilTypes.isNotEmpty
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).disabledColor,
+                  label: 'CHOOSE',
+                  vertical: 13,
+                  horizontal: 129.9,
+                ),
+              ],
+            ),
+            const SizedBox(height: 38), // Added spacing to avoid overflow
+          ],
+        ),
       ),
     );
   }
