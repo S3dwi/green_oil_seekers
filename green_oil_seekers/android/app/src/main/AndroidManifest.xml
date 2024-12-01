@@ -7,9 +7,9 @@
 
 
     <application
-        android:label="green_oil_seekers"
+        android:label="Green Oil Seekers"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/app_icon">
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY" 
